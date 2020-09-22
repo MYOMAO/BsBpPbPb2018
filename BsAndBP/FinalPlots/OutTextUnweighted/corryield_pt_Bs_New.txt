@@ -1,0 +1,5 @@
+ptmin   ptmax   xsec   statUncertUp   statUncertDown   SystUncert Up   SystUncert Down   glbUncert Up    glbUncert Down
+7   10   206848   0.429   0.414   0.552291   0.534031   0.08   0.08
+10   15   79349.2   0.23   0.214   0.163027   0.15615   0.08   0.08
+15   20   23078.5   0.211   0.204   0.132453   0.130989   0.08   0.08
+20   50   2348.84   0.21   0.195   0.163575   0.162419   0.08   0.08
