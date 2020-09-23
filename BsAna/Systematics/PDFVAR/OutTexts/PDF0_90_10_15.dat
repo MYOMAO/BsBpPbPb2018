@@ -1,0 +1,9 @@
+PDFVAR:    VarFunc:      Yield: 23.4133
+PDFVAR: signal   VarFunc: 3gauss     Yield: 23.447
+PDFVAR: signal   VarFunc: fixed     Yield: 23.3812
+PDFVAR: signal   VarFunc: scal+     Yield: 23.8422
+PDFVAR: signal   VarFunc: scal-     Yield: 22.8644
+PDFVAR: background   VarFunc: 1st     Yield: 23.0727
+PDFVAR: background   VarFunc: 2nd     Yield: 24.0442
+PDFVAR: background   VarFunc: 3rd     Yield: 24.0315
+PDFVAR: background   VarFunc: 3rd     Yield: 24.0315
