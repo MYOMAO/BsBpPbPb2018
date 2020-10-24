@@ -12,7 +12,7 @@
 #include "TRandom.h"
 #include <iostream>
 #include <fstream>
-#include "tnp_weight_lowptPbPb.h"
+
 
 
 
@@ -25,7 +25,7 @@ using std::endl;
 void ReAnaEffMCData(int CentMin, int CentMax,	const int NBins,	int DoTwoD, int drop, int Weight){
 
 	int TnP = 1;
-	int DoLater = 5;
+
 
 	TString WeightName;
 
@@ -47,15 +47,19 @@ void ReAnaEffMCData(int CentMin, int CentMax,	const int NBins,	int DoTwoD, int d
 
 
 	TString FileName;
-	if(TnP == 0) FileName = Form("EffInfo_%d_%d.root",CentMin,CentMax);
+	//if(TnP == 0) FileName = Form("EffInfo_%d_%d.root",CentMin,CentMax);
 	//	if(TnP == 1) FileName = Form("%dBptBinsTnP/EffInfo_%d_%d.root",NBptBins,CentMin,CentMax);
-	if(TnP == 2) FileName = Form("NonFiducial/EffInfo_%d_%d.root",CentMin,CentMax);
+	//if(TnP == 2) FileName = Form("NonFiducial/EffInfo_%d_%d.root",CentMin,CentMax);
 
-//	FileName = Form("CheckSystNuno/%s/EffInfo_%d_%d.root",WeightName.Data(),CentMin,CentMax);
+	//	FileName = Form("CheckSystNuno/%s/EffInfo_%d_%d.root",WeightName.Data(),CentMin,CentMax);
 
-//	FileName = Form("/export/d00/scratch/zzshi/CMSSW_7_5_8_patch3/Merge/L2L3Muons/Bs/FinalFiles/BP/EffInfo_%d_%d.root",CentMin,CentMax);
+	//	FileName = Form("/export/d00/scratch/zzshi/CMSSW_7_5_8_patch3/Merge/L2L3Muons/Bs/FinalFiles/BP/EffInfo_%d_%d.root",CentMin,CentMax);
 
-	FileName = Form("MergedInput/EffInfo_%d_%d.root",CentMin,CentMax);
+	//FileName = Form("MergedInput/EffInfo_%d_%d.root",CentMin,CentMax);
+
+
+	FileName = Form("NewTnPScheme/EffInfo_%d_%d.root",CentMin,CentMax);
+
 
 	//TString FileName = Form("/Users/zhaozhongshi/Desktop/TempDownload/EffInfo_%d_%d.root",CentMin,CentMax);
 
@@ -126,7 +130,7 @@ void ReAnaEffMCData(int CentMin, int CentMax,	const int NBins,	int DoTwoD, int d
 	EffInfoTree->SetBranchAddress("BEffInvDown",BEffInvDown);
 	EffInfoTree->SetBranchAddress("BEffInvErrDown",BEffInvErrDown);
 
-	
+
 	Int_t Bmu1Type[NCand];
 	Int_t Bmu2Type[NCand];
 
@@ -134,11 +138,8 @@ void ReAnaEffMCData(int CentMin, int CentMax,	const int NBins,	int DoTwoD, int d
 
 
 
-	TTree * MuonInfoTree = (TTree * ) fin->Get("MuonInfoTree");
-	
-	MuonInfoTree->SetBranchAddress("Bmu1Type",Bmu1Type);
-	MuonInfoTree->SetBranchAddress("Bmu2Type",Bmu2Type);
-	
+
+
 
 	Float_t Bmu1etaNew[NCand];
 	Float_t Bmu2etaNew[NCand];
@@ -368,7 +369,7 @@ void ReAnaEffMCData(int CentMin, int CentMax,	const int NBins,	int DoTwoD, int d
 	double tnptotal2statdown;
 
 
-	
+
 	double tnpabssystup;
 	double tnpabssystdown;
 
@@ -377,7 +378,7 @@ void ReAnaEffMCData(int CentMin, int CentMax,	const int NBins,	int DoTwoD, int d
 
 
 	TString TwoDMapName;
-	
+
 	if(Weight == 0)  TwoDMapName = Form("MCDataMap/NoWeight/NoWeight_%d_%d.root",CentMin,CentMax);
 	if(Weight == 3)  TwoDMapName = Form("MCDataMap/sPLOT/sPLOT_%d_%d.root",CentMin,CentMax);
 	if(Weight > 3) TwoDMapName = Form("MCDataMap/Trk/%s_%d_%d.root",WeightName.Data(),CentMin,CentMax);
@@ -394,7 +395,7 @@ void ReAnaEffMCData(int CentMin, int CentMax,	const int NBins,	int DoTwoD, int d
 	TH2D * invEff2D = (TH2D *) TwoDMapFile->Get("invEff2D");
 
 
-		cout << "invEff2DNominal->Integral() = " << invEff2DNominal->Integral() <<  "    invEff2D = " << invEff2D->Integral() << endl; 
+	cout << "invEff2DNominal->Integral() = " << invEff2DNominal->Integral() <<  "    invEff2D = " << invEff2D->Integral() << endl; 
 
 	TString OutNameDat = Form("OutData/Syst_%d_%d_%d.dat",NBins,CentMin,CentMax);
 
@@ -405,169 +406,31 @@ void ReAnaEffMCData(int CentMin, int CentMax,	const int NBins,	int DoTwoD, int d
 	for( int i = 0; i < NEvents; i++){
 
 		EffInfoTree->GetEntry(i);
-		MuonInfoTree->GetEntry(i);
-
+	
 
 		for(int j = 0; j < BsizeNew; j++){
 
 
 			for(int k = 0; k < NBins; k++){
 
-			//	if((BptNew[j] > ptBins[k] && BptNew[j] < ptBins[k+1] && TMath::Abs(BmassNew[j] - 5.27932) < 0.08  && ((BptNew[j] > 7 && BptNew[j] < 10 && ByNew[j] > 1.5 )||(BptNew[j] > 10)) && (Bmu1Type > -0.1 && Bmu2Type > -0.1)))
-				if((BptNew[j] > ptBins[k] && BptNew[j] < ptBins[k+1] && TMath::Abs(BmassNew[j] - 5.27932) < 0.08  && ((BptNew[j] > 7 && BptNew[j] < 10 && ByNew[j] > 1.5 )||(BptNew[j] > 10))) && (Bmu1Type[j] > -0.1 && Bmu2Type[j] > -0.1) )
+				//	if((BptNew[j] > ptBins[k] && BptNew[j] < ptBins[k+1] && TMath::Abs(BmassNew[j] - 5.27932) < 0.08  && ((BptNew[j] > 7 && BptNew[j] < 10 && ByNew[j] > 1.5 )||(BptNew[j] > 10)) && (Bmu1Type > -0.1 && Bmu2Type > -0.1)))
+				if((BptNew[j] > ptBins[k] && BptNew[j] < ptBins[k+1] && TMath::Abs(BmassNew[j] - 5.27932) < 0.08  && ((BptNew[j] > 7 && BptNew[j] < 10 && ByNew[j] > 1.5 )||(BptNew[j] > 10)))  )
 				{
 					//	SumCountsReal[k] = SumCountsReal[k] + BEff[j];
 					//	if(k == 0) cout << "Eff Inv Here  = " << BEffInv[j] << endl; 
 
-				
-				PtBin = invEff2DNominal->GetXaxis()->FindBin(BptNew[j]);
-				EtaBin = invEff2DNominal->GetYaxis()->FindBin(ByNew[j]);
+
+					PtBin = invEff2DNominal->GetXaxis()->FindBin(BptNew[j]);
+					EtaBin = invEff2DNominal->GetYaxis()->FindBin(ByNew[j]);
 
 
-				BEffInv[j] = invEff2DNominal->GetBinContent(PtBin,EtaBin);
-				BEffInvErr[j] = invEff2DNominal->GetBinError(PtBin,EtaBin);
+					BEffInv[j] = invEff2DNominal->GetBinContent(PtBin,EtaBin);
+					BEffInvErr[j] = invEff2DNominal->GetBinError(PtBin,EtaBin);
 
-				BEffInvBDTWeighted[j] = invEff2D->GetBinContent(PtBin,EtaBin);
-				BEffInvErrBDTWeighted[j] = invEff2D->GetBinError(PtBin,EtaBin);
-
-
-				if(DoLater == 5){
-
-						muidtnp1 = tnp_weight_muid_pbpb(Bmu1ptNew[j], Bmu1etaNew[j], 0);
-						muidtnp2 = tnp_weight_muid_pbpb(Bmu2ptNew[j], Bmu2etaNew[j], 0);
-
-						trktnp1 = tnp_weight_trk_pbpb(Bmu1etaNew[j], 0);
-						trktnp2 = tnp_weight_trk_pbpb(Bmu2etaNew[j], 0);
-
-						trktnp1systup = tnp_weight_trk_pbpb(Bmu1etaNew[j], -1);
-						trktnp1systdown = tnp_weight_trk_pbpb(Bmu1etaNew[j], -2);
-						trktnp1statup  = tnp_weight_trk_pbpb(Bmu1etaNew[j], 1);
-						trktnp1statdown = tnp_weight_trk_pbpb(Bmu1etaNew[j], 2);
+					BEffInvBDTWeighted[j] = invEff2D->GetBinContent(PtBin,EtaBin);
+					BEffInvErrBDTWeighted[j] = invEff2D->GetBinError(PtBin,EtaBin);
 
 
-						trktnp2systup = tnp_weight_trk_pbpb(Bmu2etaNew[j], -1);
-						trktnp2systdown = tnp_weight_trk_pbpb(Bmu2etaNew[j], -2);
-						trktnp2statup  = tnp_weight_trk_pbpb(Bmu2etaNew[j], 1);
-						trktnp2statdown = tnp_weight_trk_pbpb(Bmu2etaNew[j], 2);
-
-
-
-						muidtnp1systup = tnp_weight_muid_pbpb(Bmu1ptNew[j], Bmu1etaNew[j], -1);
-						muidtnp1systdown = tnp_weight_muid_pbpb(Bmu1ptNew[j], Bmu1etaNew[j], -2);
-						muidtnp1statup = tnp_weight_muid_pbpb(Bmu1ptNew[j], Bmu1etaNew[j], 1);
-						muidtnp1statdown = tnp_weight_muid_pbpb(Bmu1ptNew[j], Bmu1etaNew[j], 2);
-
-
-
-						muidtnp2systup = tnp_weight_muid_pbpb(Bmu2ptNew[j], Bmu2etaNew[j], -1);
-						muidtnp2systdown = tnp_weight_muid_pbpb(Bmu2ptNew[j], Bmu2etaNew[j], -2);
-						muidtnp2statup = tnp_weight_muid_pbpb(Bmu2ptNew[j], Bmu2etaNew[j], 1);
-						muidtnp2statdown = tnp_weight_muid_pbpb(Bmu2ptNew[j], Bmu2etaNew[j], 2);
-
-
-
-						if(Bmu1Type[j] == 1 && Bmu2Type[j] == 1){
-
-	
-							
-
-							//	cout << "totalL3 = " << totalL3 << "   Bpt = " <<  BptNew[j] << "   evt = " << evtNew << endl;
-	
-
-							trgtnp1 = 0.5 * ( tnp_weight_trg_pbpb(Bmu1ptNew[j], Bmu1etaNew[j], 1, 0) +  tnp_weight_trg_pbpb(Bmu1ptNew[j], Bmu1etaNew[j], 0, 0));
-							trgtnp2 = 0.5 * ( tnp_weight_trg_pbpb(Bmu2ptNew[j], Bmu2etaNew[j], 1, 0) +  tnp_weight_trg_pbpb(Bmu2ptNew[j], Bmu2etaNew[j], 0, 0));
-
-							trgtnp1systup = 0.5 * (tnp_weight_trg_pbpb(Bmu1ptNew[j], Bmu1etaNew[j], 1, -1) + tnp_weight_trg_pbpb(Bmu1ptNew[j], Bmu1etaNew[j], 0, -1));
-							trgtnp1systdown = 0.5 * (tnp_weight_trg_pbpb(Bmu1ptNew[j], Bmu1etaNew[j], 1, -2) + tnp_weight_trg_pbpb(Bmu1ptNew[j], Bmu1etaNew[j], 0, -2) );
-							trgtnp1statup = 0.5 * ( tnp_weight_trg_pbpb(Bmu1ptNew[j], Bmu1etaNew[j], 1, 1)  + tnp_weight_trg_pbpb(Bmu1ptNew[j], Bmu1etaNew[j], 0, 1) );
-							trgtnp1statdown = 0.5 * ( tnp_weight_trg_pbpb(Bmu1ptNew[j], Bmu1etaNew[j], 1, 2) + tnp_weight_trg_pbpb(Bmu1ptNew[j], Bmu1etaNew[j], 0, 2)  );
-
-							trgtnp2systup = 0.5 * (tnp_weight_trg_pbpb(Bmu2ptNew[j], Bmu2etaNew[j], 1, -1) + tnp_weight_trg_pbpb(Bmu2ptNew[j], Bmu2etaNew[j], 0, -1));
-							trgtnp2systdown = 0.5 * (tnp_weight_trg_pbpb(Bmu2ptNew[j], Bmu2etaNew[j], 1, -2) + tnp_weight_trg_pbpb(Bmu2ptNew[j], Bmu2etaNew[j], 0, -2) );
-							trgtnp2statup = 0.5 * ( tnp_weight_trg_pbpb(Bmu2ptNew[j], Bmu2etaNew[j], 1, 1)  + tnp_weight_trg_pbpb(Bmu2ptNew[j], Bmu2etaNew[j], 0, 1) );
-							trgtnp2statdown = 0.5 * ( tnp_weight_trg_pbpb(Bmu2ptNew[j], Bmu2etaNew[j], 1, 2) + tnp_weight_trg_pbpb(Bmu2ptNew[j], Bmu2etaNew[j], 0, 2)  );
-
-						}
-						else{
-
-					
-
-							trgtnp1 = tnp_weight_trg_pbpb(Bmu1ptNew[j], Bmu1etaNew[j], Bmu1Type[j], 0);
-							trgtnp2 = tnp_weight_trg_pbpb(Bmu2ptNew[j], Bmu2etaNew[j], Bmu2Type[j], 0);
-
-							trgtnp1systup = tnp_weight_trg_pbpb(Bmu1ptNew[j], Bmu1etaNew[j],  Bmu1Type[j], -1);
-							trgtnp1systdown = tnp_weight_trg_pbpb(Bmu1ptNew[j], Bmu1etaNew[j],  Bmu1Type[j], -2);
-							trgtnp1statup = tnp_weight_trg_pbpb(Bmu1ptNew[j], Bmu1etaNew[j],  Bmu1Type[j], 1);
-							trgtnp1statdown = tnp_weight_trg_pbpb(Bmu1ptNew[j], Bmu1etaNew[j],  Bmu1Type[j], 2);
-
-	
-							trgtnp2systup = tnp_weight_trg_pbpb(Bmu2ptNew[j], Bmu2etaNew[j],  Bmu2Type[j], -1);
-							trgtnp2systdown = tnp_weight_trg_pbpb(Bmu2ptNew[j], Bmu2etaNew[j],  Bmu2Type[j], -2);
-							trgtnp2statup = tnp_weight_trg_pbpb(Bmu2ptNew[j], Bmu2etaNew[j],  Bmu2Type[j], 1);
-							trgtnp2statdown = tnp_weight_trg_pbpb(Bmu2ptNew[j], Bmu2etaNew[j], Bmu2Type[j], 2);
-
-
-							
-						}
-
-						tnptotal1 = muidtnp1 * trktnp1 * trgtnp1;
-						tnptotal2 = muidtnp2 * trktnp2 * trgtnp2;
-
-
-						tnptotal1systup = muidtnp1systup * trktnp1systup * trgtnp1systup;
-						tnptotal1systdown = muidtnp1systdown * trktnp1systdown * trgtnp1systdown;
-						tnptotal1statup = muidtnp1statup * trktnp1statup * trgtnp1statup;
-						tnptotal1statdown = muidtnp1statdown * trktnp1statdown * trgtnp1statdown;
-	
-						tnptotal1up =  sqrt( (tnptotal1systup ) * (tnptotal1systup ) + (tnptotal1statup ) * (tnptotal1statup ));
-						tnptotal1down =  sqrt( (tnptotal1systdown ) * (tnptotal1systdown ) + (tnptotal1statdown ) * (tnptotal1statdown));
-						
-						tnptotal2systup = muidtnp2systup * trktnp2systup * trgtnp2systup;
-						tnptotal2systdown = muidtnp2systdown * trktnp2systdown * trgtnp2systdown;
-						tnptotal2statup = muidtnp2statup * trktnp2statup * trgtnp2statup;
-						tnptotal2statdown = muidtnp2statdown * trktnp2statdown * trgtnp2statdown;
-
-
-						tnptotal2up = sqrt( (tnptotal2systup ) * (tnptotal2systup ) +  (tnptotal2statup ) * (tnptotal2statup ));
-						tnptotal2down = sqrt( ( tnptotal2systdown) * (tnptotal2systdown ) + (tnptotal2statdown ) * (tnptotal2statdown )) ;
-
-				
-						tnpabssystup = abs(tnptotal1up * tnptotal2up - tnptotal1 * tnptotal2)/(tnptotal1 * tnptotal2);
-						tnpabssystdown = abs(tnptotal1down * tnptotal2down - tnptotal1 * tnptotal2)/(tnptotal1 * tnptotal2);
-
-
-			//			cout << "Before : " << " BEffInv[j] = " << BEffInv[j] << "  BEffInvUp[j] = " << BEffInvUp[j] <<  "   BEffInvDown[j] = " << BEffInvDown[j] << endl;
-	
-
-
-						BEffInv[j]  = BEffInv[j]/(tnptotal1 * tnptotal2);
-						BEffInvErr[j]  = BEffInvErr[j]/(tnptotal1 * tnptotal2);
-
-						BEffInvBDTWeighted[j] = BEffInvBDTWeighted[j]/(tnptotal1 * tnptotal2);
-						BEffInvErrBDTWeighted[j] = BEffInvErrBDTWeighted[j]/(tnptotal1 * tnptotal2);
-
-
-						//cout << "DoLater = 5 " <<  "   i = " << i <<  "   j = " << j  << "   tnptotal1up = " << tnptotal1up << "   tnptotal1down = " << tnptotal1down <<  "   tnptotal2up  = " << tnptotal2up << "   tnptotal2down = " << tnptotal2down << endl;
-				
-						//cout << "tnptotal1up * tnptotal2up/tnptotal1 * tnptotal2 - 1 = " << tnptotal1up * tnptotal2up/tnptotal1 * tnptotal2 - 1 << endl;
-					
-				//		cout << "tnpabssystup = " << tnpabssystup << "   tnpabssystdown = " << tnpabssystdown << "   Assymetry = " << (tnpabssystup + tnpabssystdown - 2)/2  << endl;
-
-
-						BEffInvUp[j] =  BEffInv[j] * tnpabssystup;
-						BEffInvDown[j] =  BEffInv[j] * tnpabssystdown;	
-					
-						
-
-	//					cout << "After : " << " BEffInv[j] = " << BEffInv[j] << "  BEffInvUp[j] = " << BEffInvUp[j] <<  "   BEffInvDown[j] = " << BEffInvDown[j] << endl;
-	
-
-						//cout << "BEffInvUp[j] = " << BEffInvUp[j] << endl;
-						BEffInvErrUp[j] =  BEffInvErrUp[j] * tnpabssystup;
-						BEffInvErrDown[j] =  BEffInvErrDown[j]* tnpabssystdown;	
-
-
-					}
 
 
 
@@ -605,7 +468,7 @@ void ReAnaEffMCData(int CentMin, int CentMax,	const int NBins,	int DoTwoD, int d
 							SumCountsErrDown[k] = SumCountsErrUp[k] + BEffInvErrDown[j] * BEffInvErrDown[j];
 
 							Counts[k] = Counts[k] + 1;
-							
+
 							//cout << "SumCounts = " << SumCounts[k] << endl;
 
 							//cout << "SumCountsUp = " << SumCountsUp[k] << endl;
@@ -753,19 +616,19 @@ void ReAnaEffMCData(int CentMin, int CentMax,	const int NBins,	int DoTwoD, int d
 		//cout << "Count =  " <<  Counts[i] << "   NewEff = " << NewEff[i] << "     NewEffErr = " << NewEffErr[i] << endl;
 		//cout << "Count =  " <<  Counts[i] << "   NewEffSyst = " << NewEffSyst[i] << "     NewEffSystErr = " << NewEffSystErr[i] << endl;
 
-	cout << "-----------------------------------------------------------------------------------------------" << endl;
-	
-	cout << "Nominal: " << "   NewEff = " << NewEff[i] << "  NewEffErr = " << NewEffErr[i] << endl;
-	cout << "Syst: " << "   NewEff = " << NewEffSyst[i] << "  NewEffErr = " << NewEffSystErr[i] << endl;
+		cout << "-----------------------------------------------------------------------------------------------" << endl;
 
-	cout << "-----------------------------------------------------------------------------------------------" << endl;
+		cout << "Nominal: " << "   NewEff = " << NewEff[i] << "  NewEffErr = " << NewEffErr[i] << endl;
+		cout << "Syst: " << "   NewEff = " << NewEffSyst[i] << "  NewEffErr = " << NewEffSystErr[i] << endl;
+
+		cout << "-----------------------------------------------------------------------------------------------" << endl;
 
 
 
-	//	cout << "-----------------------------------------------------------------------------------------------" << endl;
-//
-	//	cout << "   NewEff = " << NewEff[i] << "     NewEffErr = " << NewEffErr[i] << "  Fractional = " << NewEffErr[i]/NewEff[i] << endl;
-	//	cout << "   NewEff = " << NewEffUp[i] << "     NewEffErr = " << NewEffErrUp[i] << "  Fractional = " << NewEffErrUp[i]/NewEffUp[i] << endl;
+		//	cout << "-----------------------------------------------------------------------------------------------" << endl;
+		//
+		//	cout << "   NewEff = " << NewEff[i] << "     NewEffErr = " << NewEffErr[i] << "  Fractional = " << NewEffErr[i]/NewEff[i] << endl;
+		//	cout << "   NewEff = " << NewEffUp[i] << "     NewEffErr = " << NewEffErrUp[i] << "  Fractional = " << NewEffErrUp[i]/NewEffUp[i] << endl;
 
 
 
@@ -781,10 +644,10 @@ void ReAnaEffMCData(int CentMin, int CentMax,	const int NBins,	int DoTwoD, int d
 		OutData << "i = " << i << "   Syst = "	<< (NewEffSyst[i] - NewEff[i])/NewEff[i] << endl;
 
 
-		
+
 		//cout << "i = " << i << "    NewEffUp =   "  << NewEffUp[i]  <<    "    NewEffDown =   " <<  NewEffDown[i] << endl;
-			
-	//	cout << "i = " << i << "    SystUp =   "  << (NewEffUp[i] - NewEff[i])/ NewEff[i] <<    "    NewEffDown =   " << (NewEff[i] - NewEffDown[i])/NewEff[i] << endl;
+
+		//	cout << "i = " << i << "    SystUp =   "  << (NewEffUp[i] - NewEff[i])/ NewEff[i] <<    "    NewEffDown =   " << (NewEff[i] - NewEffDown[i])/NewEff[i] << endl;
 		cout << "-----------------------------------------------------------------------------------------------------------------------------------" << endl;
 	}
 
@@ -798,7 +661,7 @@ void ReAnaEffMCData(int CentMin, int CentMax,	const int NBins,	int DoTwoD, int d
 	hInvEff->Draw("ep");
 
 	cout << "OK" << endl;
-	
+
 	c->SaveAs(Form("CheckSystNuno/EffFinal/ReAnaEff_%d_%d_%dBins.png",CentMin,CentMax,NBins));
 	c->SaveAs(Form("CheckSystNuno/EffFinal/pdf/ReAnaEff_%d_%d_%dBins.pdf",CentMin,CentMax,NBins));
 

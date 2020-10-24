@@ -44,11 +44,20 @@ void MCefficiency(int isPbPb=0,TString inputmc="", TString selmcgen="",TString s
   centMin = centmin;
   centMax = centmax;
 
+  /*
   if(useFiducial)
     {
       cut_recoonly=Form("%s&&((Bgenpt>5&&Bgenpt<10&&TMath::Abs(By)>1.5)||(Bgenpt>10))",cut_recoonly.Data());
       cut=Form("%s&&((Bgenpt>5&&Bgenpt<10&&TMath::Abs(By)>1.5)||(Bgenpt>10))",cut.Data());
     }
+	*/
+
+	 if(useFiducial)
+    {
+      cut_recoonly=Form("%s&&((Bpt>5&&Bpt<10&&TMath::Abs(By)>1.5)||(Bpt>10))",cut_recoonly.Data());
+      cut=Form("%s&&((Bpt>5&&Bpt<10&&TMath::Abs(By)>1.5)||(Bpt>10))",cut.Data());
+    }
+
 
   if(isPbPb==1)
     {
@@ -81,6 +90,10 @@ void MCefficiency(int isPbPb=0,TString inputmc="", TString selmcgen="",TString s
   ntMC->AddFriend("skimanalysis/HltTree");
   ntMC->AddFriend("BDT");
   ntMC->AddFriend("splot");
+  ntMC->AddFriend("TnPInfo");
+  ntMC->AddFriend("CentWeightTree");
+
+
   TTree* ntGen = (TTree*)infMC->Get("Bfinder/ntGen");
   ntGen->AddFriend("hltanalysis/HltTree");
   ntGen->AddFriend("hiEvtAnalyzer/HiTree");
@@ -117,8 +130,16 @@ void MCefficiency(int isPbPb=0,TString inputmc="", TString selmcgen="",TString s
     weightBgenpt = "0.599212+-0.020703*Bgenpt+0.003143*Bgenpt*Bgenpt+-0.000034*Bgenpt*Bgenpt*Bgenpt";
     }
   */
+
+//  TH1D* hPtMCNoWeight = new TH1D("hPtMCNoWeight","",nBins,ptBins);
+ // TH1D* hPtGenNoWeight = new TH1D("hPtGenNoWeight","",nBins,ptBins);
+
+
+
+
+
    weighpthat = "pthatweight";
-   weightHiBin = "Ncoll";
+   weightHiBin = "CentWeight";
    weightPVz = "(TMath::Gaus(PVz,0.432315,4.874300)/(sqrt(2*3.14159)*4.874300))/(TMath::Gaus(PVz,0.909938,4.970989)/(sqrt(2*3.14159)*4.970989))";
 
 	if(useweight==0) { //PbPb
@@ -154,6 +175,15 @@ void MCefficiency(int isPbPb=0,TString inputmc="", TString selmcgen="",TString s
   */
 
   //double LowBinWidth = 0.5;
+ 
+  TCut muid1 = "muid1";
+  TCut muid2 = "muid2";
+  TCut trk1 = "trk1";
+  TCut trk2 = "trk2";
+  TCut trg1 = "trg1";	 
+  TCut trg2 = "trg2";
+
+
   double LowBinWidth = 0.5;
   int NLowBin = 5/LowBinWidth;
   double HighBinWidth = 1;
@@ -175,8 +205,12 @@ void MCefficiency(int isPbPb=0,TString inputmc="", TString selmcgen="",TString s
   TH1D* hPthat = new TH1D("hPthat","",100,0,500);
   TH1D* hPthatweight = new TH1D("hPthatweight","",100,0,500);
 
-  ntMC->Project("hPtMC","Bpt",TCut(weighpthat)*TCut(weightBgenpt)*TCut(weightHiBin)*TCut(weightPVz)*(TCut(cut.Data())&&"(Bgen==23333)"));
-  ntMC->Project("hPtMCrecoonly","Bpt",TCut(weighpthat)*TCut(weightBgenpt)*TCut(weightHiBin)*TCut(weightPVz)*(TCut(cut_recoonly.Data())&&"(Bgen==23333)"));
+
+
+  cout << "selmcgen = " << selmcgen.Data() << endl;
+
+  ntMC->Project("hPtMC","Bpt",(TCut(muid1) * TCut(trk1) * TCut(trg1) * TCut(muid2) * TCut(trk2) * TCut(trg2)) *TCut(weighpthat)*TCut(weightBgenpt)*TCut(weightHiBin)*TCut(weightPVz)*(TCut(cut.Data())&&"(Bgen==23333)"));
+  ntMC->Project("hPtMCrecoonly","Bpt",(TCut(muid1) * TCut(trk1) * TCut(trg1) * TCut(muid2) * TCut(trk2) * TCut(trg2)) *TCut(weighpthat)*TCut(weightBgenpt)*TCut(weightHiBin)*TCut(weightPVz)*(TCut(cut_recoonly.Data())&&"(Bgen==23333)"));
   ntGen->Project("hPtGen","Gpt",TCut(weighpthat)*TCut(weightGpt)*(TCut(selmcgen.Data())));
   ntGen->Project("hPtGenAcc","Gpt",TCut(weighpthat)*TCut(weightGpt)*(TCut(selmcgenacceptance.Data())));
   ntGen->Project("hPtGenAccWeighted","Gpt",TCut(weighpthat)*TCut(weightGpt)*TCut(weightHiBin)*TCut(weightPVz)*(TCut(selmcgenacceptance.Data())));
@@ -252,52 +286,57 @@ void MCefficiency(int isPbPb=0,TString inputmc="", TString selmcgen="",TString s
 
   if(useweight == 3)
     {
-      ntMC->Project("hPtMC2D","abs(By):Bpt",TCut(weightsplot)*TCut(weighpthat)*TCut(weightBgenpt)*TCut(weightHiBin)*TCut(weightPVz)*(TCut(cut.Data())&&"(Bgen==23333)"));
+      ntMC->Project("hPtMC2D","abs(By):Bpt", (TCut(muid1) * TCut(trk1) * TCut(trg1) * TCut(muid2) * TCut(trk2) * TCut(trg2)) * TCut(weightsplot)*TCut(weighpthat)*TCut(weightBgenpt)*TCut(weightHiBin)*TCut(weightPVz)*(TCut(cut.Data())&&"(Bgen==23333)"));
     }
 
 
 
   if(useweight == 4)
     {
-      ntMC->Project("hPtMC2D","abs(By):Bpt",TCut(weight_Btrk1Eta)*TCut(weighpthat)*TCut(weightBgenpt)*TCut(weightHiBin)*TCut(weightPVz)*(TCut(cut.Data())&&"(Bgen==23333)"));
+      ntMC->Project("hPtMC2D","abs(By):Bpt",(TCut(muid1) * TCut(trk1) * TCut(trg1) * TCut(muid2) * TCut(trk2) * TCut(trg2)) *TCut(weight_Btrk1Eta)*TCut(weighpthat)*TCut(weightBgenpt)*TCut(weightHiBin)*TCut(weightPVz)*(TCut(cut.Data())&&"(Bgen==23333)"));
     }
 
     if(useweight == 5)
     {
-      ntMC->Project("hPtMC2D","abs(By):Bpt",TCut(weight_Btrk1Y)*TCut(weighpthat)*TCut(weightBgenpt)*TCut(weightHiBin)*TCut(weightPVz)*(TCut(cut.Data())&&"(Bgen==23333)"));
+      ntMC->Project("hPtMC2D","abs(By):Bpt",(TCut(muid1) * TCut(trk1) * TCut(trg1) * TCut(muid2) * TCut(trk2) * TCut(trg2)) *TCut(weight_Btrk1Y)*TCut(weighpthat)*TCut(weightBgenpt)*TCut(weightHiBin)*TCut(weightPVz)*(TCut(cut.Data())&&"(Bgen==23333)"));
     }
 
     if(useweight == 6)
     {
-      ntMC->Project("hPtMC2D","abs(By):Bpt",TCut(weight_Btrk1Pt)*TCut(weighpthat)*TCut(weightBgenpt)*TCut(weightHiBin)*TCut(weightPVz)*(TCut(cut.Data())&&"(Bgen==23333)"));
+      ntMC->Project("hPtMC2D","abs(By):Bpt",(TCut(muid1) * TCut(trk1) * TCut(trg1) * TCut(muid2) * TCut(trk2) * TCut(trg2)) *TCut(weight_Btrk1Pt)*TCut(weighpthat)*TCut(weightBgenpt)*TCut(weightHiBin)*TCut(weightPVz)*(TCut(cut.Data())&&"(Bgen==23333)"));
     }
 
 
     if(useweight == 7)
     {
-      ntMC->Project("hPtMC2D","abs(By):Bpt",TCut(weight_Btrk1Dz1)*TCut(weighpthat)*TCut(weightBgenpt)*TCut(weightHiBin)*TCut(weightPVz)*(TCut(cut.Data())&&"(Bgen==23333)"));
+      ntMC->Project("hPtMC2D","abs(By):Bpt",(TCut(muid1) * TCut(trk1) * TCut(trg1) * TCut(muid2) * TCut(trk2) * TCut(trg2)) *TCut(weight_Btrk1Dz1)*TCut(weighpthat)*TCut(weightBgenpt)*TCut(weightHiBin)*TCut(weightPVz)*(TCut(cut.Data())&&"(Bgen==23333)"));
     }
 
     if(useweight == 8)
     {
-      ntMC->Project("hPtMC2D","abs(By):Bpt",TCut(weight_Btrk1DzError1)*TCut(weighpthat)*TCut(weightBgenpt)*TCut(weightHiBin)*TCut(weightPVz)*(TCut(cut.Data())&&"(Bgen==23333)"));
+      ntMC->Project("hPtMC2D","abs(By):Bpt",(TCut(muid1) * TCut(trk1) * TCut(trg1) * TCut(muid2) * TCut(trk2) * TCut(trg2)) *TCut(weight_Btrk1DzError1)*TCut(weighpthat)*TCut(weightBgenpt)*TCut(weightHiBin)*TCut(weightPVz)*(TCut(cut.Data())&&"(Bgen==23333)"));
     }
 
     if(useweight == 9)
     {
-      ntMC->Project("hPtMC2D","abs(By):Bpt",TCut(weight_Btrk1Dxy1)*TCut(weighpthat)*TCut(weightBgenpt)*TCut(weightHiBin)*TCut(weightPVz)*(TCut(cut.Data())&&"(Bgen==23333)"));
+      ntMC->Project("hPtMC2D","abs(By):Bpt",(TCut(muid1) * TCut(trk1) * TCut(trg1) * TCut(muid2) * TCut(trk2) * TCut(trg2)) *TCut(weight_Btrk1Dxy1)*TCut(weighpthat)*TCut(weightBgenpt)*TCut(weightHiBin)*TCut(weightPVz)*(TCut(cut.Data())&&"(Bgen==23333)"));
     }
 
     if(useweight == 10)
     {
-      ntMC->Project("hPtMC2D","abs(By):Bpt",TCut(weight_Btrk1DxyError1)*TCut(weighpthat)*TCut(weightBgenpt)*TCut(weightHiBin)*TCut(weightPVz)*(TCut(cut.Data())&&"(Bgen==23333)"));
+      ntMC->Project("hPtMC2D","abs(By):Bpt",(TCut(muid1) * TCut(trk1) * TCut(trg1) * TCut(muid2) * TCut(trk2) * TCut(trg2)) *TCut(weight_Btrk1DxyError1)*TCut(weighpthat)*TCut(weightBgenpt)*TCut(weightHiBin)*TCut(weightPVz)*(TCut(cut.Data())&&"(Bgen==23333)"));
     }
 
 
   if(useweight < 3)
     {
-      ntMC->Project("hPtMC2D","abs(By):Bpt",TCut(weighpthat)*TCut(weightBgenpt)*TCut(weightHiBin)*TCut(weightPVz)*(TCut(cut.Data())&&"(Bgen==23333)"));      
+      ntMC->Project("hPtMC2D","abs(By):Bpt",(TCut(muid1) * TCut(trk1) * TCut(trg1) * TCut(muid2) * TCut(trk2) * TCut(trg2)) *TCut(weighpthat)*TCut(weightBgenpt)*TCut(weightHiBin)*TCut(weightPVz)*(TCut(cut.Data())&&"(Bgen==23333)"));      
     }
+
+
+  cout << "weightGpt = " << weightGpt << endl;
+
+  
 
   ntGen->Project("hPtGenAcc2D","abs(Gy):Gpt",TCut(weighpthat)*TCut(weightGpt)*TCut(weightHiBin)*TCut(weightPVz)*(TCut(selmcgenacceptance.Data())));
   ntGen->Project("hPtGen2D","abs(Gy):Gpt",TCut(weighpthat)*TCut(weightGpt)*TCut(weightHiBin)*TCut(weightPVz)*(TCut(selmcgen.Data())));
@@ -642,7 +681,7 @@ void MCefficiency(int isPbPb=0,TString inputmc="", TString selmcgen="",TString s
   hPtMCrecoonly->Draw("same");
   canvas1D->SaveAs(Form("plotEff/canvas1DhPtMCrecoonly_%s.pdf",Form(label.Data())));
   canvas1D->Clear();
-  
+ 
   canvas1D=new TCanvas("canvas1D","",600,600);
   canvas1D->cd();
   gPad->SetLogy();
@@ -697,18 +736,18 @@ void MCefficiency(int isPbPb=0,TString inputmc="", TString selmcgen="",TString s
   gStyle->SetPalette(55);
   TCanvas* canvas2D=new TCanvas("canvas2D","",600,600);
 
-  if(useweight == 0) outputfile = Form("EffMapFiles/NoWeight_%0.f_%0.f.root",centmin,centmax);
-  if(useweight == 1) outputfile = Form("EffMapFiles/Expo_%0.f_%0.f.root",centmin,centmax);
-  if(useweight == 2) outputfile = Form("EffMapFiles/Poly_%0.f_%0.f.root",centmin,centmax);
+  if(useweight == 0) outputfile = Form("EffMapFilesNew/NoWeight_%0.f_%0.f.root",centmin,centmax);
+  if(useweight == 1) outputfile = Form("EffMapFilesNew/Expo_%0.f_%0.f.root",centmin,centmax);
+  if(useweight == 2) outputfile = Form("EffMapFilesNew/Poly_%0.f_%0.f.root",centmin,centmax);
 	
-  if(useweight == 3) outputfile = Form("MCDataMap/sPLOT/sPLOT_%0.f_%0.f.root",centmin,centmax);
-  if(useweight == 4) outputfile = Form("MCDataMap/Trk/Btrk1Eta_%0.f_%0.f.root",centmin,centmax);
-  if(useweight == 5) outputfile = Form("MCDataMap/Trk/Btrk1Y_%0.f_%0.f.root",centmin,centmax);
-  if(useweight == 6) outputfile = Form("MCDataMap/Trk/Btrk1Pt_%0.f_%0.f.root",centmin,centmax);
-  if(useweight == 7) outputfile = Form("MCDataMap/Trk/Btrk1Dz1_%0.f_%0.f.root",centmin,centmax);
-  if(useweight == 8) outputfile = Form("MCDataMap/Trk/Btrk1DzError1_%0.f_%0.f.root",centmin,centmax);
-  if(useweight == 9) outputfile = Form("MCDataMap/Trk/Btrk1Dxy1_%0.f_%0.f.root",centmin,centmax);
-  if(useweight == 10) outputfile = Form("MCDataMap/Trk/Btrk1DxyError1_%0.f_%0.f.root",centmin,centmax);
+  if(useweight == 3) outputfile = Form("MCDataMapNew/sPLOT/sPLOT_%0.f_%0.f.root",centmin,centmax);
+  if(useweight == 4) outputfile = Form("MCDataMapNew/Trk/Btrk1Eta_%0.f_%0.f.root",centmin,centmax);
+  if(useweight == 5) outputfile = Form("MCDataMapNew/Trk/Btrk1Y_%0.f_%0.f.root",centmin,centmax);
+  if(useweight == 6) outputfile = Form("MCDataMapNew/Trk/Btrk1Pt_%0.f_%0.f.root",centmin,centmax);
+  if(useweight == 7) outputfile = Form("MCDataMapNew/Trk/Btrk1Dz1_%0.f_%0.f.root",centmin,centmax);
+  if(useweight == 8) outputfile = Form("MCDataMapNew/Trk/Btrk1DzError1_%0.f_%0.f.root",centmin,centmax);
+  if(useweight == 9) outputfile = Form("MCDataMapNew/Trk/Btrk1Dxy1_%0.f_%0.f.root",centmin,centmax);
+  if(useweight == 10) outputfile = Form("MCDataMapNew/Trk/Btrk1DxyError1_%0.f_%0.f.root",centmin,centmax);
 
 
   TFile *fout=new TFile(outputfile.Data(),"recreate");
@@ -722,6 +761,7 @@ void MCefficiency(int isPbPb=0,TString inputmc="", TString selmcgen="",TString s
   //hEffSelection->Write();
   //hEff->Write();
   //invEff->Write();
+
 
   hPtMC->Write();
   hPtGenAccWeighted->Write();
@@ -737,6 +777,18 @@ void MCefficiency(int isPbPb=0,TString inputmc="", TString selmcgen="",TString s
   invAcc2D->Write();
   hEffonly2D->Write();
   invEffonly2D->Write();
+
+
+  cout << "cut = " << cut.Data() << endl;
+
+  TH2D* hPtMC2DNoWeight = new TH2D("hPtMC2DNoWeight","",BptBin,BptBinning,nBinsY,ptBinsY);
+  TH2D* hPtGen2DNoWeight = new TH2D("hPtGen2DNoWeight","",BptBin,BptBinning,nBinsY,ptBinsY);
+
+  ntMC->Project("hPtMC2DNoWeight","abs(By):Bpt",(TCut(cut.Data())&&"(Bgen==23333)"));
+  ntGen->Project("hPtGen2DNoWeight","abs(Gy):Gpt",(TCut(selmcgen.Data())));
+
+  hPtMC2DNoWeight->Write();
+  hPtGen2DNoWeight->Write();
 
   fout->Close();
   
