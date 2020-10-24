@@ -19,8 +19,8 @@ using std::endl;
 
 void MergeBin(){
 
-	TString File030 = "CheckSystNunoFinal/NoTnP/NewCorr_0_30.root";
-	TString File3090 = "CheckSystNunoFinal/NoTnP/NewCorr_30_90.root";
+	TString File030 = "FinalFiles/NoTnP/NewCorr_0_30.root";
+	TString File3090 = "FinalFiles/NoTnP/NewCorr_30_90.root";
 
 	TFile * fin030 = new TFile(File030.Data());
 	fin030->cd();

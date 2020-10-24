@@ -25,7 +25,7 @@ using std::endl;
 void ReAnaEffSyst(int CentMin, int CentMax, int Weight ){
 
 	int TnP = 1;
-	int DoLater = 5;
+	int DoLater = 0;
 
 	gStyle->SetOptTitle(0);
 	gStyle->SetOptStat(0);
@@ -60,13 +60,15 @@ void ReAnaEffSyst(int CentMin, int CentMax, int Weight ){
 	   if(TnP == 2) FileName = Form("NonFiducial/EffInfo_%d_%d.root",CentMin,CentMax);
 	   */
 
-	FileName = Form("CheckSystNunoNew/%s/EffInfo_%d_%d.root",WeightName.Data(),CentMin,CentMax);
+	//FileName = Form("CheckSystNunoNew/%s/EffInfo_%d_%d.root",WeightName.Data(),CentMin,CentMax);
+
+	FileName = Form("NewTnPScheme/EffInfo_%d_%d.root",CentMin,CentMax);
 
 	TFile * fin = new TFile(FileName.Data());
 	fin->cd();
 
 	TTree * EffInfoTree = (TTree * ) fin->Get("EffInfoTree");
-	TTree * MuonInfoTree = (TTree * ) fin->Get("MuonInfoTree");
+	//TTree * MuonInfoTree = (TTree * ) fin->Get("MuonInfoTree");
 
 
 	int NEvents = EffInfoTree->GetEntries();
@@ -91,8 +93,8 @@ void ReAnaEffSyst(int CentMin, int CentMax, int Weight ){
 	EffInfoTree->SetBranchAddress("ByNew",ByNew);
 	EffInfoTree->SetBranchAddress("BptNew",BptNew);
 
-	MuonInfoTree->SetBranchAddress("Bmu1Type",Bmu1Type);
-	MuonInfoTree->SetBranchAddress("Bmu2Type",Bmu2Type);
+//	MuonInfoTree->SetBranchAddress("Bmu1Type",Bmu1Type);
+//	MuonInfoTree->SetBranchAddress("Bmu2Type",Bmu2Type);
 
 	TFile * finSystMap = new TFile(Form("10kTH2D/GenStatSyst_%d_%d.root",CentMin,CentMax));
 	//TFile * finSystMap = new TFile(	Form("CheckSystNuno/%s/EffFine_%d_%d.root",WeightName.Data(),CentMin,CentMax));
@@ -273,6 +275,8 @@ void ReAnaEffSyst(int CentMin, int CentMax, int Weight ){
 	EffInfoTree->SetBranchAddress("Bmu2ptNew",Bmu2ptNew);
 
 
+	TH1D * DebugBin = new TH1D("DebugBin","",100,0,20);
+
 	for(int iTrial = 0; iTrial < NTrials;  iTrial++){
 
 		cout << "Now Working on Trial = " << iTrial << " OUT OF " << NTrials << endl;
@@ -283,10 +287,13 @@ void ReAnaEffSyst(int CentMin, int CentMax, int Weight ){
 		AccInv2DTrial = (TH2D * ) finSystMap->Get(Form("AccBptByInvTrial%d",iTrial));
 
 
+//		cout << "EffInv2DTrial->GetBinContent(35,3) = " << EffInv2DTrial->GetBinContent(35,3)   << endl;
+
+		DebugBin->Fill(EffInv2DTrial->GetBinContent(35,3));
 
 		for( int i = 0; i < NEvents; i++){
 		
-			MuonInfoTree->GetEntry(i);
+//			MuonInfoTree->GetEntry(i);
 			EffInfoTree->GetEntry(i);
 			BsizeNewSyst = BsizeNew;
 
@@ -309,143 +316,6 @@ void ReAnaEffSyst(int CentMin, int CentMax, int Weight ){
 				BSelInvSyst[j] = SelInv2DTrial->GetBinContent(XLOC,YLOC);
 				BAccInvSyst[j] = AccInv2DTrial->GetBinContent(XLOC,YLOC);
 
-				if(DoLater == 1){
-
-						EtaBin = tnp_scale1->GetYaxis()->FindBin(ByNewSyst[j]);
-						PtBin = tnp_scale1->GetXaxis()->FindBin(BptNewSyst[j]);
-
-						//			cout<< "tnp_scaleOld = " << tnp_scaleOld->GetBinContent(PtBin,EtaBin)  << "   tnp_scale = " <<   tnp_scale->GetBinContent(PtBin,EtaBin) << "  tnp_scale0 =  " << tnp_scale0->GetBinContent(PtBin,EtaBin)  <<  "   tnp_scale1 =  " << tnp_scale1->GetBinContent(PtBin,EtaBin) <<   "   tnp_scale2 =  " << tnp_scale2->GetBinContent(PtBin,EtaBin) <<  "   tnp_scale3 =  " << tnp_scale3->GetBinContent(PtBin,EtaBin) <<  "   tnp_scale4 =  " << tnp_scale4->GetBinContent(PtBin,EtaBin) << endl;
-
-						if(Bmu1TypeSyst[j] == 0 && Bmu2TypeSyst[j]  == 1){
-
-							EtaBin = tnp_scale1->GetYaxis()->FindBin(ByNewSyst[j]);
-							PtBin = tnp_scale1->GetXaxis()->FindBin(BptNewSyst[j]);
-							BSelInvSyst[j] =  BSelInvSyst[j]/tnp_scale1->GetBinContent(PtBin,EtaBin);
-							BEffInvSyst[j] = BEffInvSyst[j]/tnp_scale1->GetBinContent(PtBin,EtaBin);
-	
-
-						}
-
-
-
-						if(Bmu1TypeSyst[j] == 1 && Bmu2TypeSyst[j] == 0){
-
-							EtaBin = tnp_scale2->GetYaxis()->FindBin(ByNewSyst[j]);
-							PtBin = tnp_scale2->GetXaxis()->FindBin(BptNewSyst[j]);
-							BSelInvSyst[j] =  BSelInvSyst[j]/tnp_scale2->GetBinContent(PtBin,EtaBin);
-							BEffInvSyst[j] = BEffInvSyst[j]/tnp_scale2->GetBinContent(PtBin,EtaBin);
-
-						}
-
-
-
-						if(Bmu1TypeSyst[j] == 0 && Bmu2TypeSyst[j] == 0){
-
-							EtaBin = tnp_scale3->GetYaxis()->FindBin(ByNewSyst[j]);
-							PtBin = tnp_scale3->GetXaxis()->FindBin(BptNewSyst[j]);
-							BSelInvSyst[j] =  BSelInvSyst[j]/tnp_scale3->GetBinContent(PtBin,EtaBin);
-							BEffInvSyst[j] = BEffInvSyst[j]/tnp_scale3->GetBinContent(PtBin,EtaBin);
-
-						}
-
-
-						if(Bmu1TypeSyst[j] == 1 && Bmu2TypeSyst[j] == 1){
-
-							EtaBin = tnp_scale4->GetYaxis()->FindBin(ByNewSyst[j]);
-							PtBin = tnp_scale4->GetXaxis()->FindBin(BptNewSyst[j]);
-							BSelInvSyst[j] =  0.5 * ( BSelInvSyst[j]/tnp_scale1->GetBinContent(PtBin,EtaBin) +  BSelInvSyst[j]/tnp_scale2->GetBinContent(PtBin,EtaBin));
-							BEffInvSyst[j] = 0.5 * ( BEffInvSyst[j]/tnp_scale1->GetBinContent(PtBin,EtaBin) +  BEffInvSyst[j]/tnp_scale2->GetBinContent(PtBin,EtaBin) );
-
-						}
-
-
-					}
-
-
-					if(DoLater == 5){
-					
-						muidtnp1 = tnp_weight_muid_pbpb(Bmu1ptNew[j], Bmu1etaNew[j], 0);
-						muidtnp2 = tnp_weight_muid_pbpb(Bmu2ptNew[j], Bmu2etaNew[j], 0);
-
-						trktnp1 = tnp_weight_trk_pbpb(Bmu1etaNew[j], 0);
-						trktnp2 = tnp_weight_trk_pbpb(Bmu2etaNew[j], 0);
-
-
-						if(Bmu1Type[j] == 1 && Bmu2Type[j] == 1){
-
-							trgtnp1 = 0.5 * ( tnp_weight_trg_pbpb(Bmu1ptNew[j], Bmu1etaNew[j], 1, 0) +  tnp_weight_trg_pbpb(Bmu1ptNew[j], Bmu1etaNew[j], 0, 0));
-							trgtnp2 = 0.5 * ( tnp_weight_trg_pbpb(Bmu2ptNew[j], Bmu2etaNew[j], 1, 0) +  tnp_weight_trg_pbpb(Bmu2ptNew[j], Bmu2etaNew[j], 0, 0));
-
-						}
-						else{
-
-							trgtnp1 = tnp_weight_trg_pbpb(Bmu1ptNew[j], Bmu1etaNew[j], Bmu1Type[j], 0);
-							trgtnp2 = tnp_weight_trg_pbpb(Bmu2ptNew[j], Bmu2etaNew[j], Bmu2Type[j], 0);
-
-						}
-
-						tnptotal1 = muidtnp1 * trktnp1 * trgtnp1;
-						tnptotal2 = muidtnp2 * trktnp2 * trgtnp2;
-
-						//cout << "tnptotal1 = " << tnptotal1 <<   "    tnptotal2 =  "  << tnptotal2 << endl;
-
-
-						BSelInvSyst[j]  = BSelInvSyst[j]/(tnptotal1 * tnptotal2);
-						BEffInvSyst[j]  = BEffInvSyst[j]/(tnptotal1 * tnptotal2);
-
-
-					}
-
-
-					if(DoLater == 6){
-					
-						muidtnp1 = tnp_weight_muid_pbpb(Bmu1ptNew[j], Bmu1etaNew[j], 0);
-						muidtnp2 = tnp_weight_muid_pbpb(Bmu2ptNew[j], Bmu2etaNew[j], 0);
-
-						trktnp1 = tnp_weight_trk_pbpb(Bmu1etaNew[j], 0);
-						trktnp2 = tnp_weight_trk_pbpb(Bmu2etaNew[j], 0);
-
-
-						if(Bmu1Type[j] == 1 && Bmu2Type[j] == 1){
-
-							trgtnp1 = 0.5 * ( tnp_weight_trg_pbpb(Bmu1ptNew[j], Bmu1etaNew[j], 1, 0) +  tnp_weight_trg_pbpb(Bmu1ptNew[j], Bmu1etaNew[j], 0, 0));
-							trgtnp2 = 0.5 * ( tnp_weight_trg_pbpb(Bmu2ptNew[j], Bmu2etaNew[j], 1, 0) +  tnp_weight_trg_pbpb(Bmu2ptNew[j], Bmu2etaNew[j], 0, 0));
-
-							tnptotal1L2 = muidtnp1 *  trktnp1 * tnp_weight_trg_pbpb(Bmu1ptNew[j], Bmu1etaNew[j], 0, 0);
-							tnptotal1L3 = muidtnp1 *  trktnp1 * tnp_weight_trg_pbpb(Bmu1ptNew[j], Bmu1etaNew[j], 1, 0);
-
-							tnptotal2L2 = muidtnp2 *  trktnp2 * tnp_weight_trg_pbpb(Bmu2ptNew[j], Bmu2etaNew[j], 0, 0);
-							tnptotal2L3 = muidtnp2 *  trktnp2 * tnp_weight_trg_pbpb(Bmu2ptNew[j], Bmu2etaNew[j], 1, 0);
-
-												
-							BSelInvSyst[j]  = 2 * BSelInvSyst[j]/(tnptotal1L2 * tnptotal2L3 + tnptotal1L3 * tnptotal2L2);
-							BEffInvSyst[j]  = 2 * BEffInvSyst[j]/(tnptotal1L2 * tnptotal2L3 + tnptotal1L3 * tnptotal2L2);
-
-
-						}
-						else{
-
-							trgtnp1 = tnp_weight_trg_pbpb(Bmu1ptNew[j], Bmu1etaNew[j], Bmu1Type[j], 0);
-							trgtnp2 = tnp_weight_trg_pbpb(Bmu2ptNew[j], Bmu2etaNew[j], Bmu2Type[j], 0);
-
-						tnptotal1 = muidtnp1 * trktnp1 * trgtnp1;
-						tnptotal2 = muidtnp2 * trktnp2 * trgtnp2;
-					
-						BSelInvSyst[j]  = BSelInvSyst[j]/(tnptotal1 * tnptotal2);
-						BEffInvSyst[j]  = BEffInvSyst[j]/(tnptotal1 * tnptotal2);
-
-						}
-
-		
-						//cout << "tnptotal1 = " << tnptotal1 <<   "    tnptotal2 =  "  << tnptotal2 << endl;
-
-
-
-
-
-					}
-
-
 
 
 			}
@@ -458,5 +328,11 @@ void ReAnaEffSyst(int CentMin, int CentMax, int Weight ){
 
 	finSyst->Write();
 	finSyst->Close();
+
+	TCanvas *c = new TCanvas("c","c",600,600);
+	c->cd();
+	cout <<  "DebugBin->Integral() = "  <<	DebugBin->Integral() << endl;
+	DebugBin->Draw();
+	c->SaveAs("Debug.png");
 
 }

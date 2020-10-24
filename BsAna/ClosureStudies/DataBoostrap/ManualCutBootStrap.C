@@ -140,7 +140,8 @@ void ManualCutBootStrap(int CentMin, int CentMax, int Shape, int TwoShot, int Pt
 	Int_t phfCoincFilter2Th4;
 
 
-	TFile * finEff = new TFile(Form("CheckSystNuno/%s/EffFine_%d_%d.root",FolderName.Data(),CentMin,CentMax));
+	//TFile * finEff = new TFile(Form("CheckSystNuno/%s/EffFine_%d_%d.root",FolderName.Data(),CentMin,CentMax));
+	TFile * finEff = new TFile(Form("2DMapsNew/EffFine_%d_%d.root",CentMin,CentMax));
 
 
 	finEff->cd();

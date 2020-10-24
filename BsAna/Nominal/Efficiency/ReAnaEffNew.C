@@ -12,9 +12,6 @@
 #include "TRandom.h"
 #include <iostream>
 #include <fstream>
-//#include "OldHeader/tnp_weight_lowptPbPb.h"
-#include "NewHeader/tnp_weight_lowptPbPb.h"
-
 
 
 //#include "his.h"
@@ -23,7 +20,7 @@ using namespace std;
 using std::cout;
 using std::endl;
 
-void ReAnaEffNew(int CentMin, int CentMax,	const int NBins,	int DoTwoD, int drop, int Weight, int New, 	int DoLater){
+void ReAnaEffNew(int CentMin, int CentMax,	const int NBins,	int DoTwoD, int drop, int Weight){
 
 	int TnP = 1;
 
@@ -45,11 +42,7 @@ void ReAnaEffNew(int CentMin, int CentMax,	const int NBins,	int DoTwoD, int drop
 	gStyle->SetOptStat(0);
 
 
-	TString FileName;
-
-
-	if(New == 1) FileName = Form("CheckSystNunoNew/%s/EffInfo_%d_%d.root",WeightName.Data(),CentMin,CentMax);
-	if(New == 0) FileName = Form("CheckSystNuno/%s/EffInfo_%d_%d.root",WeightName.Data(),CentMin,CentMax);
+	TString FileName = Form("NewTnPScheme/EffInfo_%d_%d.root",CentMin,CentMax);
 
 
 	//TString FileName = Form("/Users/zhaozhongshi/Desktop/TempDownload/EffInfo_%d_%d.root",CentMin,CentMax);
@@ -94,6 +87,11 @@ void ReAnaEffNew(int CentMin, int CentMax,	const int NBins,	int DoTwoD, int drop
 	Float_t BEffInvErrUp[NCand];
 	Float_t BEffInvDown[NCand];
 	Float_t BEffInvErrDown[NCand];
+
+
+
+
+	EffInfoTree->SetBranchAddress("evtNew",&evtNew);
 
 	EffInfoTree->SetBranchAddress("BsizeNew",&BsizeNew);
 	EffInfoTree->SetBranchAddress("BmassNew",BmassNew);
@@ -193,6 +191,7 @@ void ReAnaEffNew(int CentMin, int CentMax,	const int NBins,	int DoTwoD, int drop
 
 
 
+
 	double TAA;
 	std::vector<double> ptbinsvec;
 	std::vector<double> corrfactvec;
@@ -248,7 +247,6 @@ void ReAnaEffNew(int CentMin, int CentMax,	const int NBins,	int DoTwoD, int drop
 
 
 
-
 	for(int i = 0; i < NBins + 1; i++){
 		ptBins[i] =  ptbinsvec[i];
 	}
@@ -267,6 +265,10 @@ void ReAnaEffNew(int CentMin, int CentMax,	const int NBins,	int DoTwoD, int drop
 		SumCountsDown[i] = 0;
 		SumCountsErrDown[i] = 0;
 	}
+
+	double MinPt;
+	if(drop == 0) MinPt = 7;
+	if(drop == 0) MinPt = 10;
 
 
 
@@ -288,56 +290,6 @@ void ReAnaEffNew(int CentMin, int CentMax,	const int NBins,	int DoTwoD, int drop
 	   double SumCounts[NBins]={0,0,0,0};
 	   double SumCountsErr[NBins]={0,0,0,0};
 	   */
-
-	//	TFile * finTnP =  new TFile(Form("NewTnP/TNP2D_Bplus_Cent_detailed%d-%d.root",CentMin,CentMax));
-	TFile * finTnP =  new TFile(Form("OldTnP/TNP2D_Bs_Cent%d-%d.root",CentMin,CentMax));
-	//	TFile * finTnP =  new TFile(Form("NewBatoulTnP/TNP2D_Bs_Cent_detailed%d-%d.root",CentMin,CentMax));
-	//	TFile * finTnP =  new TFile(Form("OldScheme/TNP2D_Bs_Cent_detailed%d-%d.root",CentMin,CentMax));
-
-	finTnP->cd();
-	TH2D * tnp_scale = (TH2D *) finTnP->Get("tnp_scale");
-	TH2D * tnp_total_d = (TH2D *) finTnP->Get("tnp_total_d");
-	TH2D * tnp_total_u = (TH2D *) finTnP->Get("tnp_total_u");
-
-
-
-
-	//Start Input Files//
-
-	TFile * finTnP0 =  new TFile(Form("TnPL2L3/TNP2D_Bs_Cent_detailed%d-%d_Opt_0.root",CentMin,CentMax));
-	TFile * finTnP1 =  new TFile(Form("TnPL2L3/TNP2D_Bs_Cent_detailed%d-%d_Opt_1.root",CentMin,CentMax));
-	TFile * finTnP2 =  new TFile(Form("TnPL2L3/TNP2D_Bs_Cent_detailed%d-%d_Opt_2.root",CentMin,CentMax));
-	TFile * finTnP3 =  new TFile(Form("TnPL2L3/TNP2D_Bs_Cent_detailed%d-%d_Opt_3.root",CentMin,CentMax));
-	TFile * finTnP4 =  new TFile(Form("TnPL2L3/TNP2D_Bs_Cent_detailed%d-%d_Opt_4.root",CentMin,CentMax));
-
-	finTnP0->cd();
-	TH2D * tnp_scale0 = (TH2D *) finTnP0->Get("tnp_scale");
-	TH2D * tnp_total_d0 = (TH2D *) finTnP0->Get("tnp_total_d");
-	TH2D * tnp_total_u0 = (TH2D *) finTnP0->Get("tnp_total_u");
-
-
-	finTnP1->cd();
-	TH2D * tnp_scale1 = (TH2D *) finTnP1->Get("tnp_scale");
-	TH2D * tnp_total_d1 = (TH2D *) finTnP1->Get("tnp_total_d");
-	TH2D * tnp_total_u1 = (TH2D *) finTnP1->Get("tnp_total_u");
-
-
-	finTnP2->cd();
-	TH2D * tnp_scale2 = (TH2D *) finTnP2->Get("tnp_scale");
-	TH2D * tnp_total_d2 = (TH2D *) finTnP2->Get("tnp_total_d");
-	TH2D * tnp_total_u2 = (TH2D *) finTnP2->Get("tnp_total_u");
-
-	finTnP3->cd();
-	TH2D * tnp_scale3 = (TH2D *) finTnP3->Get("tnp_scale");
-	TH2D * tnp_total_d3 = (TH2D *) finTnP3->Get("tnp_total_d");
-	TH2D * tnp_total_u3 = (TH2D *) finTnP3->Get("tnp_total_u");
-
-
-	finTnP4->cd();
-	TH2D * tnp_scale4 = (TH2D *) finTnP4->Get("tnp_scale");
-	TH2D * tnp_total_d4 = (TH2D *) finTnP4->Get("tnp_total_d");
-	TH2D * tnp_total_u4 = (TH2D *) finTnP4->Get("tnp_total_u");
-
 
 
 
@@ -405,10 +357,56 @@ void ReAnaEffNew(int CentMin, int CentMax,	const int NBins,	int DoTwoD, int drop
 	double tnptotal2statdown;
 
 
+	double tnptotal1L2;
+	double tnptotal1L3;
+	double tnptotal2L2;
+	double tnptotal2L3;
+
+
+	double tnptotal1L2systup;
+	double tnptotal1L2systdown;
+	double tnptotal1L2statup;
+	double tnptotal1L2statdown;
+
+
+	double tnptotal1L3systup;
+	double tnptotal1L3systdown;
+	double tnptotal1L3statup;
+	double tnptotal1L3statdown;
+
+
+	double tnptotal2L2systup;
+	double tnptotal2L2systdown;
+	double tnptotal2L2statup;
+	double tnptotal2L2statdown;
+
+	double tnptotal2L3systup;
+	double tnptotal2L3systdown;
+	double tnptotal2L3statup;
+	double tnptotal2L3statdown;
+
+	
+	double tnptotal1L2up;
+	double tnptotal1L2down;
+	double tnptotal2L2up;
+	double tnptotal2L2down;
+
+	double tnptotal1L3up;
+	double tnptotal1L3down;
+	double tnptotal2L3up;
+	double tnptotal2L3down;
+
+	double tnpabssystup;
+	double tnpabssystdown;
+
+
 
 	//DONE INPUTING FILES
+	
 
+	int totalL3 = 0;
 
+	int Random;
 
 	int EtaBin;
 	int PtBin;
@@ -432,382 +430,7 @@ void ReAnaEffNew(int CentMin, int CentMax,	const int NBins,	int DoTwoD, int drop
 					tnptotal1 = 1;
 					tnptotal2 = 1;
 					
-					if(Weight == 0){
 
-						BEffInvUp[j] = BEffInv[j];
-						BEffInvDown[j] = BEffInv[j];
-						BEffInvErrUp[j] = BEffInvErr[j];
-						BEffInvErrDown[j] = BEffInvErr[j];
-
-
-					}
-
-					if(DoLater == 1){
-
-						EtaBin = tnp_scale->GetYaxis()->FindBin(ByNew[j]);
-						PtBin = tnp_scale->GetXaxis()->FindBin(BptNew[j]);
-						BEffInv[j] =  BEffInv[j]/tnp_scale->GetBinContent(PtBin,EtaBin);
-						BEffInvErr[j] = BEffInvErr[j]/tnp_scale->GetBinContent(PtBin,EtaBin);
-						BEffInvUp[j] = BEffInvUp[j]/(1-tnp_total_d->GetBinContent(PtBin,EtaBin));
-						BEffInvDown[j] = BEffInvDown[j]/(1+tnp_total_u->GetBinContent(PtBin,EtaBin));
-						BEffInvErrUp[j] = BEffInvErrUp[j]/(1-tnp_total_d->GetBinContent(PtBin,EtaBin));
-						BEffInvErrDown[j] = BEffInvErrDown[j]/(1+tnp_total_u->GetBinContent(PtBin,EtaBin));
-
-
-					}
-
-
-
-					if(DoLater == 2){
-
-						EtaBin = tnp_scale->GetYaxis()->FindBin(ByNew[j]);
-						PtBin = tnp_scale->GetXaxis()->FindBin(BptNew[j]);
-
-						//			cout<< "tnp_scaleOld = " << tnp_scaleOld->GetBinContent(PtBin,EtaBin)  << "   tnp_scale = " <<   tnp_scale->GetBinContent(PtBin,EtaBin) << "  tnp_scale0 =  " << tnp_scale0->GetBinContent(PtBin,EtaBin)  <<  "   tnp_scale1 =  " << tnp_scale1->GetBinContent(PtBin,EtaBin) <<   "   tnp_scale2 =  " << tnp_scale2->GetBinContent(PtBin,EtaBin) <<  "   tnp_scale3 =  " << tnp_scale3->GetBinContent(PtBin,EtaBin) <<  "   tnp_scale4 =  " << tnp_scale4->GetBinContent(PtBin,EtaBin) << endl;
-
-						if(Bmu1Type[j] == 0 && Bmu2Type[j] == 1){
-
-							EtaBin = tnp_scale1->GetYaxis()->FindBin(ByNew[j]);
-							PtBin = tnp_scale1->GetXaxis()->FindBin(BptNew[j]);
-							BEffInv[j] =  BEffInv[j]/tnp_scale1->GetBinContent(PtBin,EtaBin);
-							BEffInvErr[j] = BEffInvErr[j]/tnp_scale1->GetBinContent(PtBin,EtaBin);
-							BEffInvUp[j] = BEffInv[j]/(1-tnp_total_d1->GetBinContent(PtBin,EtaBin));
-							BEffInvDown[j] = BEffInv[j]/(1+tnp_total_u1->GetBinContent(PtBin,EtaBin));
-							BEffInvErrUp[j] = BEffInvErr[j]/(1-tnp_total_d1->GetBinContent(PtBin,EtaBin));
-							BEffInvErrDown[j] = BEffInvErr[j]/(1+tnp_total_u1->GetBinContent(PtBin,EtaBin));
-
-						}
-
-
-
-						if(Bmu1Type[j] == 1 && Bmu2Type[j] == 0){
-
-							EtaBin = tnp_scale2->GetYaxis()->FindBin(ByNew[j]);
-							PtBin = tnp_scale2->GetXaxis()->FindBin(BptNew[j]);
-							BEffInv[j] =  BEffInv[j]/tnp_scale2->GetBinContent(PtBin,EtaBin);
-							BEffInvErr[j] = BEffInvErr[j]/tnp_scale2->GetBinContent(PtBin,EtaBin);
-							BEffInvUp[j] = BEffInv[j]/(1-tnp_total_d2->GetBinContent(PtBin,EtaBin));
-							BEffInvDown[j] = BEffInv[j]/(1+tnp_total_u2->GetBinContent(PtBin,EtaBin));
-							BEffInvErrUp[j] = BEffInvErr[j]/(1-tnp_total_d2->GetBinContent(PtBin,EtaBin));
-							BEffInvErrDown[j] = BEffInvErr[j]/(1+tnp_total_u2->GetBinContent(PtBin,EtaBin));
-
-						}
-
-
-
-						if(Bmu1Type[j] == 0 && Bmu2Type[j] == 0){
-
-							EtaBin = tnp_scale3->GetYaxis()->FindBin(ByNew[j]);
-							PtBin = tnp_scale3->GetXaxis()->FindBin(BptNew[j]);
-							BEffInv[j] =  BEffInv[j]/tnp_scale3->GetBinContent(PtBin,EtaBin);
-							BEffInvErr[j] = BEffInvErr[j]/tnp_scale3->GetBinContent(PtBin,EtaBin);
-							BEffInvUp[j] = BEffInv[j]/(1-tnp_total_d3->GetBinContent(PtBin,EtaBin));
-							BEffInvDown[j] = BEffInv[j]/(1+tnp_total_u3->GetBinContent(PtBin,EtaBin));
-							BEffInvErrUp[j] = BEffInvErr[j]/(1-tnp_total_d3->GetBinContent(PtBin,EtaBin));
-							BEffInvErrDown[j] = BEffInvErr[j]/(1+tnp_total_u3->GetBinContent(PtBin,EtaBin));
-
-						}
-
-
-						if(Bmu1Type[j] == 1 && Bmu2Type[j] == 1){
-
-							EtaBin = tnp_scale4->GetYaxis()->FindBin(ByNew[j]);
-							PtBin = tnp_scale4->GetXaxis()->FindBin(BptNew[j]);
-							BEffInv[j] =  BEffInv[j]/tnp_scale4->GetBinContent(PtBin,EtaBin);
-							BEffInvErr[j] = BEffInvErr[j]/tnp_scale4->GetBinContent(PtBin,EtaBin);
-							BEffInvUp[j] = BEffInv[j]/(1-tnp_total_d4->GetBinContent(PtBin,EtaBin));
-							BEffInvDown[j] = BEffInv[j]/(1+tnp_total_u4->GetBinContent(PtBin,EtaBin));
-							BEffInvErrUp[j] = BEffInvErr[j]/(1-tnp_total_d4->GetBinContent(PtBin,EtaBin));
-							BEffInvErrDown[j] = BEffInvErr[j]/(1+tnp_total_u4->GetBinContent(PtBin,EtaBin));
-
-						}
-
-
-
-					}
-
-
-
-					if(DoLater == 3){
-
-						EtaBin = tnp_scale->GetYaxis()->FindBin(ByNew[j]);
-						PtBin = tnp_scale->GetXaxis()->FindBin(BptNew[j]);
-
-
-						//			cout<< "tnp_scaleOld = " << tnp_scaleOld->GetBinContent(PtBin,EtaBin)  << "   tnp_scale = " <<   tnp_scale->GetBinContent(PtBin,EtaBin) << "  tnp_scale0 =  " << tnp_scale0->GetBinContent(PtBin,EtaBin)  <<  "   tnp_scale1 =  " << tnp_scale1->GetBinContent(PtBin,EtaBin) <<   "   tnp_scale2 =  " << tnp_scale2->GetBinContent(PtBin,EtaBin) <<  "   tnp_scale3 =  " << tnp_scale3->GetBinContent(PtBin,EtaBin) <<  "   tnp_scale4 =  " << tnp_scale4->GetBinContent(PtBin,EtaBin) << endl;
-
-						if(Bmu1Type[j] == 0 && Bmu2Type[j] == 1){
-
-							EtaBin = tnp_scale1->GetYaxis()->FindBin(ByNew[j]);
-							PtBin = tnp_scale1->GetXaxis()->FindBin(BptNew[j]);
-							BEffInv[j] =  BEffInv[j]/tnp_scale1->GetBinContent(PtBin,EtaBin);
-							BEffInvErr[j] = BEffInvErr[j]/tnp_scale1->GetBinContent(PtBin,EtaBin);
-							BEffInvUp[j] = BEffInv[j]/(1-tnp_total_d1->GetBinContent(PtBin,EtaBin));
-							BEffInvDown[j] = BEffInv[j]/(1+tnp_total_u1->GetBinContent(PtBin,EtaBin));
-							BEffInvErrUp[j] = BEffInvErr[j]/(1-tnp_total_d1->GetBinContent(PtBin,EtaBin));
-							BEffInvErrDown[j] = BEffInvErr[j]/(1+tnp_total_u1->GetBinContent(PtBin,EtaBin));
-
-						}
-
-
-
-						if(Bmu1Type[j] == 1 && Bmu2Type[j] == 0){
-
-							EtaBin = tnp_scale2->GetYaxis()->FindBin(ByNew[j]);
-							PtBin = tnp_scale2->GetXaxis()->FindBin(BptNew[j]);
-							BEffInv[j] =  BEffInv[j]/tnp_scale2->GetBinContent(PtBin,EtaBin);
-							BEffInvErr[j] = BEffInvErr[j]/tnp_scale2->GetBinContent(PtBin,EtaBin);
-							BEffInvUp[j] = BEffInv[j]/(1-tnp_total_d2->GetBinContent(PtBin,EtaBin));
-							BEffInvDown[j] = BEffInv[j]/(1+tnp_total_u2->GetBinContent(PtBin,EtaBin));
-							BEffInvErrUp[j] = BEffInvErr[j]/(1-tnp_total_d2->GetBinContent(PtBin,EtaBin));
-							BEffInvErrDown[j] = BEffInvErr[j]/(1+tnp_total_u2->GetBinContent(PtBin,EtaBin));
-
-						}
-
-
-
-						if(Bmu1Type[j] == 0 && Bmu2Type[j] == 0){
-
-							EtaBin = tnp_scale3->GetYaxis()->FindBin(ByNew[j]);
-							PtBin = tnp_scale3->GetXaxis()->FindBin(BptNew[j]);
-							BEffInv[j] =  BEffInv[j]/tnp_scale3->GetBinContent(PtBin,EtaBin);
-							BEffInvErr[j] = BEffInvErr[j]/tnp_scale3->GetBinContent(PtBin,EtaBin);
-							BEffInvUp[j] = BEffInv[j]/(1-tnp_total_d3->GetBinContent(PtBin,EtaBin));
-							BEffInvDown[j] = BEffInv[j]/(1+tnp_total_u3->GetBinContent(PtBin,EtaBin));
-							BEffInvErrUp[j] = BEffInvErr[j]/(1-tnp_total_d3->GetBinContent(PtBin,EtaBin));
-							BEffInvErrDown[j] = BEffInvErr[j]/(1+tnp_total_u3->GetBinContent(PtBin,EtaBin));
-
-						}
-
-
-						if(Bmu1Type[j] == 1 && Bmu2Type[j] == 1){
-
-							EtaBin = tnp_scale4->GetYaxis()->FindBin(ByNew[j]);
-							PtBin = tnp_scale4->GetXaxis()->FindBin(BptNew[j]);
-							BEffInv[j] =  0.5 * ( BEffInv[j]/tnp_scale1->GetBinContent(PtBin,EtaBin) +  BEffInv[j]/tnp_scale2->GetBinContent(PtBin,EtaBin));
-							BEffInvErr[j] = 0.5 * ( BEffInvErr[j]/tnp_scale1->GetBinContent(PtBin,EtaBin) +  BEffInvErr[j]/tnp_scale2->GetBinContent(PtBin,EtaBin) );
-							BEffInvUp[j] = 0.5 * ( BEffInv[j]/(1-tnp_total_d1->GetBinContent(PtBin,EtaBin))  +   BEffInv[j]/(1-tnp_total_d2->GetBinContent(PtBin,EtaBin)) );
-							BEffInvDown[j] = 0.5 * ( BEffInv[j]/(1+tnp_total_u1->GetBinContent(PtBin,EtaBin)) + BEffInv[j]/(1+tnp_total_u2->GetBinContent(PtBin,EtaBin)));
-							BEffInvErrUp[j] =0.5 * (BEffInvErr[j]/(1-tnp_total_d1->GetBinContent(PtBin,EtaBin))+ BEffInvErr[j]/(1-tnp_total_d2->GetBinContent(PtBin,EtaBin)));
-							BEffInvErrDown[j] =0.5 *( BEffInvErr[j]/(1+tnp_total_u1->GetBinContent(PtBin,EtaBin)) +  BEffInvErr[j]/(1+tnp_total_u2->GetBinContent(PtBin,EtaBin)));
-
-						}
-
-						if(BEffInvUp[j] < BEffInv[j]) cout << "FUCKED UP Event = " << i << endl;
-
-
-
-					}
-
-
-					if(DoLater == 4){
-
-						muidtnp1 = tnp_weight_muid_pbpb(Bmu1ptNew[j], Bmu1etaNew[j], 0);
-						muidtnp2 = tnp_weight_muid_pbpb(Bmu2ptNew[j], Bmu2etaNew[j], 0);
-
-
-
-						trktnp1 = tnp_weight_trk_pbpb(Bmu1etaNew[j], 0);
-						trktnp2 = tnp_weight_trk_pbpb(Bmu2etaNew[j], 0);
-
-
-
-
-						trgtnp1 = tnp_weight_trg_pbpb(Bmu1ptNew[j], Bmu1etaNew[j], 1, 0);
-						trgtnp2 = tnp_weight_trg_pbpb(Bmu2ptNew[j], Bmu2etaNew[j], 1, 0);
-
-
-
-
-
-	
-						tnptotal1 = muidtnp1 * trktnp1 * trgtnp1;
-						tnptotal2 = muidtnp2 * trktnp2 * trgtnp2;
-
-	
-					
-
-
-
-						BEffInv[j]  = BEffInv[j]/(tnptotal1 * tnptotal2);
-						BEffInvErr[j]  = BEffInvErr[j]/(tnptotal1 * tnptotal2);
-				
-
-	
-						
-						trgtnp1systup = tnp_weight_trg_pbpb(Bmu1ptNew[j], Bmu1etaNew[j], 1, -1);
-						trgtnp1systdown = tnp_weight_trg_pbpb(Bmu1ptNew[j], Bmu1etaNew[j], 1, -2);
-						trgtnp1statup = tnp_weight_trg_pbpb(Bmu1ptNew[j], Bmu1etaNew[j], 1, 1);
-						trgtnp1statdown = tnp_weight_trg_pbpb(Bmu1ptNew[j], Bmu1etaNew[j], 1, 2);
-
-						
-						trgtnp2systup = tnp_weight_trg_pbpb(Bmu2ptNew[j], Bmu2etaNew[j], 1, -1);
-						trgtnp2systdown = tnp_weight_trg_pbpb(Bmu2ptNew[j], Bmu2etaNew[j], 1, -2);
-						trgtnp2statup = tnp_weight_trg_pbpb(Bmu2ptNew[j], Bmu2etaNew[j], 1, 1);
-						trgtnp2statdown = tnp_weight_trg_pbpb(Bmu2ptNew[j], Bmu2etaNew[j], 1, 2);
-
-
-
-						trktnp1systup = tnp_weight_trk_pbpb(Bmu1etaNew[j], -1);
-						trktnp1systdown = tnp_weight_trk_pbpb(Bmu1etaNew[j], -2);
-						trktnp1statup  = tnp_weight_trk_pbpb(Bmu1etaNew[j], 1);
-						trktnp1statdown = tnp_weight_trk_pbpb(Bmu1etaNew[j], 2);
-
-
-						trktnp2systup = tnp_weight_trk_pbpb(Bmu2etaNew[j], -1);
-						trktnp2systdown = tnp_weight_trk_pbpb(Bmu2etaNew[j], -2);
-						trktnp2statup  = tnp_weight_trk_pbpb(Bmu2etaNew[j], 1);
-						trktnp2statdown = tnp_weight_trk_pbpb(Bmu2etaNew[j], 2);
-
-
-
-						muidtnp1systup = tnp_weight_muid_pbpb(Bmu1ptNew[j], Bmu1etaNew[j], -1);
-						muidtnp1systdown = tnp_weight_muid_pbpb(Bmu1ptNew[j], Bmu1etaNew[j], -2);
-						muidtnp1statup = tnp_weight_muid_pbpb(Bmu1ptNew[j], Bmu1etaNew[j], 1);
-						muidtnp1statdown = tnp_weight_muid_pbpb(Bmu1ptNew[j], Bmu1etaNew[j], 2);
-
-						muidtnp2systup = tnp_weight_muid_pbpb(Bmu2ptNew[j], Bmu2etaNew[j], -1);
-						muidtnp2systdown = tnp_weight_muid_pbpb(Bmu2ptNew[j], Bmu2etaNew[j], -2);
-						muidtnp2statup = tnp_weight_muid_pbpb(Bmu2ptNew[j], Bmu2etaNew[j], 1);
-						muidtnp2statdown = tnp_weight_muid_pbpb(Bmu2ptNew[j], Bmu2etaNew[j], 2);
-
-
-						tnptotal1systup = muidtnp1systup * trktnp1systup * trgtnp1systup;
-						tnptotal1systdown = muidtnp1systdown * trktnp1systdown * trgtnp1systdown;
-						tnptotal1statup = muidtnp1statup * trktnp1statup * trgtnp1statup;
-						tnptotal1statdown = muidtnp1statdown * trktnp1statdown * trgtnp1statdown;
-
-						tnptotal1up = sqrt(tnptotal1systup * tnptotal1systup + tnptotal1statup * tnptotal1statup);
-						tnptotal1down = sqrt(tnptotal1systdown * tnptotal1systdown + tnptotal1statdown * tnptotal1statdown);
-						
-						tnptotal2systup = muidtnp2systup * trktnp2systup * trgtnp2systup;
-						tnptotal2systdown = muidtnp2systdown * trktnp2systdown * trgtnp2systdown;
-						tnptotal2statup = muidtnp2statup * trktnp2statup * trgtnp2statup;
-						tnptotal2statdown = muidtnp2statdown * trktnp2statdown * trgtnp2statdown;
-
-
-						tnptotal2up = sqrt(tnptotal2systup * tnptotal2systup + tnptotal2statup * tnptotal2statup);
-						tnptotal2down = sqrt(tnptotal2systdown * tnptotal2systdown + tnptotal2statdown * tnptotal2statdown);
-
-
-
-						BEffInvUp[j] =  BEffInvUp[j]/(tnptotal1systdown * tnptotal2systdown);
-						BEffInvDown[j] =  BEffInvDown[j]/(tnptotal1systup * tnptotal2systup);	
-						
-						//cout << "BEffInvUp[j] = " << BEffInvUp[j] << endl;
-						BEffInvErrUp[j] =  BEffInvErrUp[j]/(tnptotal1systdown * tnptotal2systdown);
-						BEffInvErrDown[j] =  BEffInvErrDown[j]/(tnptotal1systup * tnptotal2systup);	
-						
-					}
-
-
-					if(DoLater == 5){
-
-						muidtnp1 = tnp_weight_muid_pbpb(Bmu1ptNew[j], Bmu1etaNew[j], 0);
-						muidtnp2 = tnp_weight_muid_pbpb(Bmu2ptNew[j], Bmu2etaNew[j], 0);
-
-						trktnp1 = tnp_weight_trk_pbpb(Bmu1etaNew[j], 0);
-						trktnp2 = tnp_weight_trk_pbpb(Bmu2etaNew[j], 0);
-
-						trktnp1systup = tnp_weight_trk_pbpb(Bmu1etaNew[j], -1);
-						trktnp1systdown = tnp_weight_trk_pbpb(Bmu1etaNew[j], -2);
-						trktnp1statup  = tnp_weight_trk_pbpb(Bmu1etaNew[j], 1);
-						trktnp1statdown = tnp_weight_trk_pbpb(Bmu1etaNew[j], 2);
-
-
-						trktnp2systup = tnp_weight_trk_pbpb(Bmu2etaNew[j], -1);
-						trktnp2systdown = tnp_weight_trk_pbpb(Bmu2etaNew[j], -2);
-						trktnp2statup  = tnp_weight_trk_pbpb(Bmu2etaNew[j], 1);
-						trktnp2statdown = tnp_weight_trk_pbpb(Bmu2etaNew[j], 2);
-
-
-
-						muidtnp1systup = tnp_weight_muid_pbpb(Bmu1ptNew[j], Bmu1etaNew[j], -1);
-						muidtnp1systdown = tnp_weight_muid_pbpb(Bmu1ptNew[j], Bmu1etaNew[j], -2);
-						muidtnp1statup = tnp_weight_muid_pbpb(Bmu1ptNew[j], Bmu1etaNew[j], 1);
-						muidtnp1statdown = tnp_weight_muid_pbpb(Bmu1ptNew[j], Bmu1etaNew[j], 2);
-
-
-
-						muidtnp2systup = tnp_weight_muid_pbpb(Bmu2ptNew[j], Bmu2etaNew[j], -1);
-						muidtnp2systdown = tnp_weight_muid_pbpb(Bmu2ptNew[j], Bmu2etaNew[j], -2);
-						muidtnp2statup = tnp_weight_muid_pbpb(Bmu2ptNew[j], Bmu2etaNew[j], 1);
-						muidtnp2statdown = tnp_weight_muid_pbpb(Bmu2ptNew[j], Bmu2etaNew[j], 2);
-
-
-
-						if(Bmu1Type[j] == 1 && Bmu2Type[j] == 1){
-
-							trgtnp1 = 0.5 * ( tnp_weight_trg_pbpb(Bmu1ptNew[j], Bmu1etaNew[j], 1, 0) +  tnp_weight_trg_pbpb(Bmu1ptNew[j], Bmu1etaNew[j], 0, 0));
-							trgtnp2 = 0.5 * ( tnp_weight_trg_pbpb(Bmu2ptNew[j], Bmu2etaNew[j], 1, 0) +  tnp_weight_trg_pbpb(Bmu2ptNew[j], Bmu2etaNew[j], 0, 0));
-
-							trgtnp1systup = 0.5 * (tnp_weight_trg_pbpb(Bmu1ptNew[j], Bmu1etaNew[j], 1, -1) + tnp_weight_trg_pbpb(Bmu1ptNew[j], Bmu1etaNew[j], 0, -1));
-							trgtnp1systdown = 0.5 * (tnp_weight_trg_pbpb(Bmu1ptNew[j], Bmu1etaNew[j], 1, -2) + tnp_weight_trg_pbpb(Bmu1ptNew[j], Bmu1etaNew[j], 0, -2) );
-							trgtnp1statup = 0.5 * ( tnp_weight_trg_pbpb(Bmu1ptNew[j], Bmu1etaNew[j], 1, 1)  + tnp_weight_trg_pbpb(Bmu1ptNew[j], Bmu1etaNew[j], 0, 1) );
-							trgtnp1statdown = 0.5 * ( tnp_weight_trg_pbpb(Bmu1ptNew[j], Bmu1etaNew[j], 1, 2) + tnp_weight_trg_pbpb(Bmu1ptNew[j], Bmu1etaNew[j], 0, 2)  );
-
-							trgtnp2systup = 0.5 * (tnp_weight_trg_pbpb(Bmu2ptNew[j], Bmu2etaNew[j], 1, -1) + tnp_weight_trg_pbpb(Bmu2ptNew[j], Bmu2etaNew[j], 0, -1));
-							trgtnp2systdown = 0.5 * (tnp_weight_trg_pbpb(Bmu2ptNew[j], Bmu2etaNew[j], 1, -2) + tnp_weight_trg_pbpb(Bmu2ptNew[j], Bmu2etaNew[j], 0, -2) );
-							trgtnp2statup = 0.5 * ( tnp_weight_trg_pbpb(Bmu2ptNew[j], Bmu2etaNew[j], 1, 1)  + tnp_weight_trg_pbpb(Bmu2ptNew[j], Bmu2etaNew[j], 0, 1) );
-							trgtnp2statdown = 0.5 * ( tnp_weight_trg_pbpb(Bmu2ptNew[j], Bmu2etaNew[j], 1, 2) + tnp_weight_trg_pbpb(Bmu2ptNew[j], Bmu2etaNew[j], 0, 2)  );
-
-						}
-						else{
-
-							trgtnp1 = tnp_weight_trg_pbpb(Bmu1ptNew[j], Bmu1etaNew[j], Bmu1Type[j], 0);
-							trgtnp2 = tnp_weight_trg_pbpb(Bmu2ptNew[j], Bmu2etaNew[j], Bmu2Type[j], 0);
-
-							trgtnp1systup = tnp_weight_trg_pbpb(Bmu1ptNew[j], Bmu1etaNew[j],  Bmu1Type[j], -1);
-							trgtnp1systdown = tnp_weight_trg_pbpb(Bmu1ptNew[j], Bmu1etaNew[j],  Bmu1Type[j], -2);
-							trgtnp1statup = tnp_weight_trg_pbpb(Bmu1ptNew[j], Bmu1etaNew[j],  Bmu1Type[j], 1);
-							trgtnp1statdown = tnp_weight_trg_pbpb(Bmu1ptNew[j], Bmu1etaNew[j],  Bmu1Type[j], 2);
-
-	
-							trgtnp2systup = tnp_weight_trg_pbpb(Bmu2ptNew[j], Bmu2etaNew[j],  Bmu2Type[j], -1);
-							trgtnp2systdown = tnp_weight_trg_pbpb(Bmu2ptNew[j], Bmu2etaNew[j],  Bmu2Type[j], -2);
-							trgtnp2statup = tnp_weight_trg_pbpb(Bmu2ptNew[j], Bmu2etaNew[j],  Bmu2Type[j], 1);
-							trgtnp2statdown = tnp_weight_trg_pbpb(Bmu2ptNew[j], Bmu2etaNew[j], Bmu2Type[j], 2);
-
-
-						}
-
-						tnptotal1 = muidtnp1 * trktnp1 * trgtnp1;
-						tnptotal2 = muidtnp2 * trktnp2 * trgtnp2;
-
-
-						tnptotal1systup = muidtnp1systup * trktnp1systup * trgtnp1systup;
-						tnptotal1systdown = muidtnp1systdown * trktnp1systdown * trgtnp1systdown;
-						tnptotal1statup = muidtnp1statup * trktnp1statup * trgtnp1statup;
-						tnptotal1statdown = muidtnp1statdown * trktnp1statdown * trgtnp1statdown;
-
-						tnptotal1up = sqrt(tnptotal1systup * tnptotal1systup + tnptotal1statup * tnptotal1statup);
-						tnptotal1down = sqrt(tnptotal1systdown * tnptotal1systdown + tnptotal1statdown * tnptotal1statdown);
-						
-						tnptotal2systup = muidtnp2systup * trktnp2systup * trgtnp2systup;
-						tnptotal2systdown = muidtnp2systdown * trktnp2systdown * trgtnp2systdown;
-						tnptotal2statup = muidtnp2statup * trktnp2statup * trgtnp2statup;
-						tnptotal2statdown = muidtnp2statdown * trktnp2statdown * trgtnp2statdown;
-
-
-						tnptotal2up = sqrt(tnptotal2systup * tnptotal2systup + tnptotal2statup * tnptotal2statup);
-						tnptotal2down = sqrt(tnptotal2systdown * tnptotal2systdown + tnptotal2statdown * tnptotal2statdown);
-
-
-						//cout << "tnptotal1 = " << tnptotal1 <<   "    tnptotal2 =  "  << tnptotal2 << endl;
-
-
-						BEffInv[j]  = BEffInv[j]/(tnptotal1 * tnptotal2);
-						BEffInvErr[j]  = BEffInvErr[j]/(tnptotal1 * tnptotal2);
-
-
-						BEffInvUp[j] =  BEffInvUp[j]/(tnptotal1systdown * tnptotal2systdown);
-						BEffInvDown[j] =  BEffInvDown[j]/(tnptotal1systup * tnptotal2systup);	
-						
-						//cout << "BEffInvUp[j] = " << BEffInvUp[j] << endl;
-						BEffInvErrUp[j] =  BEffInvErrUp[j]/(tnptotal1systdown * tnptotal2systdown);
-						BEffInvErrDown[j] =  BEffInvErrDown[j]/(tnptotal1systup * tnptotal2systup);	
-
-					}
 
 					if(DoTwoD == 0){
 						BEffErr[j] = BEffInvErr1D[j]/(BEffInv1D[j] * BEffInv1D[j]);
@@ -826,6 +449,7 @@ void ReAnaEffNew(int CentMin, int CentMax,	const int NBins,	int DoTwoD, int drop
 
 					if(DoTwoD == 1){
 						BEffErr[j] = BEffInvErr[j]/(BEffInv[j] * BEffInv[j]);
+				//		cout << "BEffInv[j] = " <<  BEffInv[j] << endl;
 						if(BEffInv[j] > 0){
 							SumCounts[k] = SumCounts[k] + BEffInv[j];
 							SumCountsErr[k] = SumCountsErr[k] + BEffInvErr[j] * BEffInvErr[j];
@@ -835,6 +459,8 @@ void ReAnaEffNew(int CentMin, int CentMax,	const int NBins,	int DoTwoD, int drop
 							SumCountsSystErr[k] = 	SumCountsSystErr[k]  + BEffInvErrBDTWeighted[j] * BEffInvErrBDTWeighted[j];
 
 							SumCountsUp[k] = SumCountsUp[k] + BEffInvUp[j];
+							
+					//		cout << "DoLater = " << DoLater << "	SumCountsUp[k] = " << 	SumCountsUp[k] << " BEffInvUp[j] = " << BEffInvUp[j] << endl; 
 							SumCountsErrUp[k] = SumCountsErrUp[k] + BEffInvErrUp[j] * BEffInvErrUp[j];
 
 							SumCountsDown[k] = SumCountsDown[k] + BEffInvDown[j];
@@ -1021,7 +647,7 @@ void ReAnaEffNew(int CentMin, int CentMax,	const int NBins,	int DoTwoD, int drop
 
 	cout << "OK" << endl;
 
-	c->SaveAs(Form("Plots/%s/ReAnaEff_%d_%d_%dBins.png",WeightName.Data(),CentMin,CentMax,NBins));
+	c->SaveAs(Form("Plots/NewEff/ReAnaEff_%d_%d_%dBins.png",CentMin,CentMax,NBins));
 
 	hInvEff->SetMarkerColor(2);
 	hInvEff->SetLineColor(2);
@@ -1070,9 +696,10 @@ void ReAnaEffNew(int CentMin, int CentMax,	const int NBins,	int DoTwoD, int drop
 	SelEffSystRatio->SetLineColor(1);
 	SelEffSystRatio->Draw("ep");
 
+	
 
 
-	TLine *l5 = new TLine(7,1,50,1);
+	TLine *l5 = new TLine(MinPt,1,50,1);
 	l5->SetLineStyle(2);
 	l5->SetLineWidth(2);
 	l5->SetLineColor(2);
@@ -1141,7 +768,7 @@ void ReAnaEffNew(int CentMin, int CentMax,	const int NBins,	int DoTwoD, int drop
 	legTnPRatio->AddEntry(hInvDownRatio,"TnP - Total Down/Nominal","pl");
 	legTnPRatio->Draw("SAME");
 
-	TLine *l6 = new TLine(7,1,50,1);
+	TLine *l6 = new TLine(MinPt,1,50,1);
 	l6->SetLineStyle(2);
 	l6->SetLineWidth(1);
 	l6->SetLineColor(1);
@@ -1175,10 +802,6 @@ void ReAnaEffNew(int CentMin, int CentMax,	const int NBins,	int DoTwoD, int drop
 	}
 
 
-
-
-
-
 	//Yield and Corrected Yield//
 
 	TFile * fout = new TFile(Form("Efficiency/ReAnaEff_%d_%d.root",CentMin,CentMax),"RECREATE");
@@ -1196,62 +819,27 @@ void ReAnaEffNew(int CentMin, int CentMax,	const int NBins,	int DoTwoD, int drop
 
 
 
-	if(New == 0){
-		if(CentMin ==0 && CentMax==90){
-			TAA = 6.274; 
-			if(NBins == 1 && drop == 0)	RawYield = new TFile(Form("RawYields/%d-%d/yields_Bs_Fiducial_pt750_cent0-90.root",CentMin,CentMax));
-			if(NBins == 1 && drop == 1)	RawYield = new TFile(Form("RawYields/%d-%d/yields_Bs_pt1050_Cent0-90New.root",CentMin,CentMax));
-			if(NBins == 3)	RawYield = new TFile(Form("RawYields/%d-%d/yields_Bs_binned_pt_cent090.root",CentMin,CentMax));
-			if(NBins == 4) RawYield = new TFile(Form("RawYields/%d-%d/yields_Bs_Fiducial_Bsnewpt_cent0-90.root ",CentMin,CentMax));
-		}
 
 
-		if(CentMin ==0 && CentMax==30){
-			TAA = 15.41;
-			if(NBins == 1 && drop == 0)	RawYield = new TFile(Form("RawYields/%d-%d/yields_Bs_Fiducial_pt750_cent0-30.root",CentMin,CentMax));
-			if(NBins == 1 && drop == 1)	RawYield = new TFile(Form("RawYields/%d-%d/yields_Bs_pt1050_Cent0-30New.root",CentMin,CentMax));
-			if(NBins == 3)	RawYield = new TFile(Form("RawYields/%d-%d/yields_Bs_binned_cent_1st_pt_3bins.root",CentMin,CentMax));		
-			if(NBins == 4)	RawYield = new TFile(Form("RawYields/%d-%d/yields_Bs_binned_cent_1st_pt.root",CentMin,CentMax));
-		}
 
-		if(CentMin ==30 && CentMax==90){
-			TAA = 1.705;
-			if(NBins == 1 && drop == 1)	RawYield = new TFile(Form("RawYields/%d-%d/yields_Bs_pt1050_Cent30-90New.root",CentMin,CentMax));
-
-			if(NBins == 1 && drop == 0)	RawYield = new TFile(Form("RawYields/%d-%d/yields_Bs_Fiducial_pt950_cent30-90.root",CentMin,CentMax));	
-
-			if(NBins == 3)	RawYield = new TFile(Form("RawYields/%d-%d/yields_Bs_binned_cent_2nd_pt_3bins.root",CentMin,CentMax));
-			if(NBins == 4)	RawYield = new TFile(Form("RawYields/%d-%d/yields_Bs_binned_cent_2nd_pt.root",CentMin,CentMax));
-
-			if(ptbinsvec[0] == 10.6) RawYield = new TFile(Form("RawYields/%d-%d/yields_Bs_pt10p650_cent30-90.root",CentMin,CentMax));
-			if(ptbinsvec[0] == 12) RawYield = new TFile(Form("RawYields/%d-%d/yields_Bs_pt1250_cent30-90.root",CentMin,CentMax));
-
-			if(ptbinsvec[0] == 10.5) RawYield = new TFile(Form("RawYields/%d-%d/yields_Bs_pt10p550_cent30-90.root",CentMin,CentMax));
-		}
+	if(CentMin ==0 && CentMax==90){
+		TAA = 6.274; 
+		if(NBins == 1 && drop == 0)		RawYield = new TFile("RawYields/yields_Bs_full_0_90_750.root");
+		if(NBins == 1 && drop == 1)		RawYield = new TFile("RawYields/yields_Bs_full_0_90.root");
+		if(NBins == 4) RawYield = new TFile("RawYields/yields_Bs_binned_pt.root");
 	}
 
 
+	if(CentMin ==0 && CentMax==30){
+		TAA = 15.41;
+		if(NBins == 1 && drop == 1)	RawYield = new TFile("RawYields/yields_Bs_full_0_30.root");
 
+	}
 
-	if(New == 1){
-		if(CentMin ==0 && CentMax==90){
-			TAA = 6.274; 
-			if(NBins == 1 && drop == 1)		RawYield = new TFile("RawYieldsNew/yields_Bs_full_0_90.root");
-			if(NBins == 4) RawYield = new TFile("RawYieldsNew/yields_Bs_binned_pt.root");
-		}
+	if(CentMin ==30 && CentMax==90){
+		TAA = 1.705;
+		if(NBins == 1 && drop == 1)	RawYield = new TFile("RawYields/yields_Bs_full_30_90.root");
 
-
-		if(CentMin ==0 && CentMax==30){
-			TAA = 15.41;
-			if(NBins == 1 && drop == 1)	RawYield = new TFile("RawYieldsNew/yields_Bs_full_0_30.root");
-
-		}
-
-		if(CentMin ==30 && CentMax==90){
-			TAA = 1.705;
-			if(NBins == 1 && drop == 1)	RawYield = new TFile("RawYieldsNew/yields_Bs_full_30_90.root");
-
-		}
 	}
 
 
@@ -1307,7 +895,7 @@ void ReAnaEffNew(int CentMin, int CentMax,	const int NBins,	int DoTwoD, int drop
 	if(drop == 1 && NBins == 4) start = 1;
 	if(drop == 1 && NBins == 1) start = 0;
 
-	cout << "start = " << start << endl;
+	cout << "start = " << start <<  "   hPt->GetNbinsX() = " << hPt->GetNbinsX() << endl;
 	Double_t BRchain=3.118974e-5;
 	double ptBinWidth;
 
@@ -1493,11 +1081,14 @@ void ReAnaEffNew(int CentMin, int CentMax,	const int NBins,	int DoTwoD, int drop
 
 		for(int i = start; i < hPt->GetNbinsX();i++){
 
-			cout << "i = " << i << "  CorrYieldDiff =  " << CorrYieldDiff[i] * PtBinForComp[i] * TAA/40  << endl;
+			cout << "i = " << i << "  CorrYieldDiff =  " << CorrYieldDiff[i] * PtBinForComp[i] * TAA/43  << endl;
 			//
 		}
 
+
 	}
+
+	cout << "FinalCorrYieldComp = " << FinalCorrYield *TAA <<  "     FinalCorrYieldErr = " << FinalCorrYieldErr << endl;
 
 	cout << "FinalCorrYieldComp = " << FinalCorrYield *TAA <<  "     FinalCorrYieldErr = " << FinalCorrYieldErr << endl;
 

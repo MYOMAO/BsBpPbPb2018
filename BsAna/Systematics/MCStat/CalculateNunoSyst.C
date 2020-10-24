@@ -151,7 +151,7 @@ void CalculateNunoSyst(int CentMin, int CentMax,	const int NBins, int drop ){
 				minaccvec.push_back(3.1);
 				maxaccvec.push_back(3.3);
 				maxvec.push_back(50);
-				meanvec.push_back(34.044);
+				meanvec.push_back(36.8132);
 
 			}
 
@@ -163,7 +163,7 @@ void CalculateNunoSyst(int CentMin, int CentMax,	const int NBins, int drop ){
 				minaccvec.push_back(3.4);
 				maxaccvec.push_back(3.5);
 				maxvec.push_back(70);
-				meanvec.push_back(44.7885);
+				meanvec.push_back(48.678);
 
 			}
 
@@ -175,7 +175,7 @@ void CalculateNunoSyst(int CentMin, int CentMax,	const int NBins, int drop ){
 				minaccvec.push_back(2.5);
 				maxaccvec.push_back(2.8);
 				maxvec.push_back(20);
-				meanvec.push_back(13.9428);
+				meanvec.push_back(14.8064);
 
 			}
 
@@ -211,10 +211,10 @@ void CalculateNunoSyst(int CentMin, int CentMax,	const int NBins, int drop ){
 
 
 
-		minvec.push_back(14);
-		minvec.push_back(5.9);
-		minvec.push_back(2.9);
 		minvec.push_back(0);
+		minvec.push_back(60);
+		minvec.push_back(20);
+		minvec.push_back(9);
 
 		minaccvec.push_back(12);
 		minaccvec.push_back(5.2);
@@ -229,10 +229,10 @@ void CalculateNunoSyst(int CentMin, int CentMax,	const int NBins, int drop ){
 
 
 
-		maxvec.push_back(900);
-		maxvec.push_back(100);
-		maxvec.push_back(30);
-		maxvec.push_back(16);
+		maxvec.push_back(800);
+		maxvec.push_back(110);
+		maxvec.push_back(27);
+		maxvec.push_back(13);
 
 
 
@@ -253,10 +253,10 @@ void CalculateNunoSyst(int CentMin, int CentMax,	const int NBins, int drop ){
 
 
 
-		meanvec.push_back(390.707);
-		meanvec.push_back(73.4529);
-		meanvec.push_back(22.0149);
-		meanvec.push_back(10.6906);
+		meanvec.push_back(390.861);
+		meanvec.push_back(80.8904);
+		meanvec.push_back(23.2539);
+		meanvec.push_back(10.7834);
 
 
 

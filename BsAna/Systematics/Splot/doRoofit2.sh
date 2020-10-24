@@ -19,7 +19,7 @@ DOANALYSISPbPb_ROOFIT_BINNED_DOUBLE_BP_2ND_Y=0
 
 
 CENTPbPbMIN=0
-CENTPbPbMAX=30
+CENTPbPbMAX=90
 
 #INPUTMCPbPbCANDWISE_BS="/afs/cern.ch/work/j/jusilva/CMSSW_7_5_8_patch5/src/UserCode/Bmeson2018Ana/Bs/CrossSection/cut_trees/selected_mc_ntphi_PbPb_2018_corrected_test_new.root"
 #INPUTDATAPbPbCANDWISE_BS="/afs/cern.ch/work/j/jusilva/CMSSW_7_5_8_patch5/src/UserCode/Bmeson2018Ana/Bs/CrossSection/cut_trees/selected_data_ntphi_PbPb_2018_corrected_test_new.root"  
@@ -27,10 +27,10 @@ CENTPbPbMAX=30
 #INPUTDATAPbPbCANDWISE_BS="./flat_trees/selected_data_ntphi_PbPb_2018_new_train_BDT.root"  
 
 
-INPUTMCPbPbCANDWISE_BS="/export/d00/scratch/zzshi/CMSSW_7_5_8_patch3/Merge/2018Ana/BsRAA2015RunII/NunoClosure/New/0-90/5-50/EffInfo_MC_Closure-1.root"
+INPUTMCPbPbCANDWISE_BS="NewTnPScheme/EffInfo_MC_Closure-1.root"
 #INPUTDATAPbPbCANDWISE_BS="/export/d00/scratch/zzshi/CMSSW_7_5_8_patch3/Merge/2018Ana/BsRAA2015RunII/NunoClosure/CheckSystNuno/NoWeight/MCSPlitRanGen/0-90/10-50/5/MC_30.root"
 #INPUTDATAPbPbCANDWISE_BS="/export/d00/scratch/zzshi/CMSSW_7_5_8_patch3/Merge/2018Ana/BsRAA2015RunII/NunoClosure/CheckSystNuno/NoWeight/MCSPlitRanGen/0-90/10-50/5/MC_3.root"
-INPUTDATAPbPbCANDWISE_BS="EffInfo_${CENTPbPbMIN}_${CENTPbPbMAX}.root"
+INPUTDATAPbPbCANDWISE_BS="NewTnPScheme/EffInfo_${CENTPbPbMIN}_${CENTPbPbMAX}.root"
 
 
 

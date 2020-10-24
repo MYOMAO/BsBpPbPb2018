@@ -13,7 +13,7 @@
 #include <iostream>
 #include <fstream>
 #include "TH1D.h"
-#include "tnp_weight_lowptPbPb.h"
+
 
 
 //#include "his.h"
@@ -44,7 +44,7 @@ void ReAnaEff(int CentMin, int CentMax,	const int NBins,	int DoTwoD, int drop, i
 
 	TString FileName;
 
-	FileName = Form("CheckSystNuno/%s/EffInfo_%d_%d.root",WeightName.Data(),CentMin,CentMax);
+	FileName = Form("Merged/EffInfo_%d_%d.root",CentMin,CentMax);
 
 
 	//TString FileName = Form("/Users/zhaozhongshi/Desktop/TempDownload/EffInfo_%d_%d.root",CentMin,CentMax);
@@ -295,13 +295,13 @@ void ReAnaEff(int CentMin, int CentMax,	const int NBins,	int DoTwoD, int drop, i
 	TH2D * tnp_total_d = (TH2D *) finTnP->Get("tnp_total_d");
 	TH2D * tnp_total_u = (TH2D *) finTnP->Get("tnp_total_u");
 
-	int DoLater = 5;
+	int DoLater = 0;
 
 	int EtaBin;
 	int PtBin;
 
 
-	
+
 	double trgtnp1;
 	double trktnp1;
 	double muidtnp1;
@@ -346,51 +346,7 @@ void ReAnaEff(int CentMin, int CentMax,	const int NBins,	int DoTwoD, int drop, i
 
 						}
 
-								
-						if(DoLater == 5){
 
-						muidtnp1 = tnp_weight_muid_pbpb(Bmu1ptNew[j], Bmu1etaNew[j], 0);
-						muidtnp2 = tnp_weight_muid_pbpb(Bmu2ptNew[j], Bmu2etaNew[j], 0);
-
-						trktnp1 = tnp_weight_trk_pbpb(Bmu1etaNew[j], 0);
-						trktnp2 = tnp_weight_trk_pbpb(Bmu2etaNew[j], 0);
-
-	
-
-						if(Bmu1Type[j] == 1 && Bmu2Type[j] == 1){
-
-							
-
-							//	cout << "totalL3 = " << totalL3 << "   Bpt = " <<  BptNew[j] << "   evt = " << evtNew << endl;
-	
-
-							trgtnp1 = 0.5 * ( tnp_weight_trg_pbpb(Bmu1ptNew[j], Bmu1etaNew[j], 1, 0) +  tnp_weight_trg_pbpb(Bmu1ptNew[j], Bmu1etaNew[j], 0, 0));
-							trgtnp2 = 0.5 * ( tnp_weight_trg_pbpb(Bmu2ptNew[j], Bmu2etaNew[j], 1, 0) +  tnp_weight_trg_pbpb(Bmu2ptNew[j], Bmu2etaNew[j], 0, 0));
-
-
-						}
-						else{
-
-					
-
-							trgtnp1 = tnp_weight_trg_pbpb(Bmu1ptNew[j], Bmu1etaNew[j], Bmu1Type[j], 0);
-							trgtnp2 = tnp_weight_trg_pbpb(Bmu2ptNew[j], Bmu2etaNew[j], Bmu2Type[j], 0);
-
-
-
-							
-						}
-
-						tnptotal1 = muidtnp1 * trktnp1 * trgtnp1;
-						tnptotal2 = muidtnp2 * trktnp2 * trgtnp2;
-
-
-						BEffInv[j]  = BEffInv[j]/(tnptotal1 * tnptotal2);
-						//BEffInvErr[j]  = BEffInvErr[j]/(tnptotal1 * tnptotal2);
-
-
-
-					}
 
 					if(DoTwoD == 0){
 						BEffErr[j] = BEffInvErr1D[j]/(BEffInv1D[j] * BEffInv1D[j]);

@@ -83,7 +83,7 @@ void SpiltDataBoot(int CentMin, int CentMax, int PtOpt){
 	cout << "Pass 0.5 " << endl;
 
 	TTree * EffInfoTree = (TTree * ) fin->Get("EffInfoTree");
-	TTree * MuonInfoTree = (TTree * ) fin->Get("MuonInfoTree");
+	//TTree * MuonInfoTree = (TTree * ) fin->Get("MuonInfoTree");
 
 
 	int NEvents = EffInfoTree->GetEntries();
@@ -165,7 +165,7 @@ void SpiltDataBoot(int CentMin, int CentMax, int PtOpt){
 	TTree* EffInfoTree_New;
 	TTree* EffInfoTree_NewFit;
 
-	TTree* MuonInfoTree_New;
+//	TTree* MuonInfoTree_New;
 
 
 	int NSets = 1000;
@@ -179,7 +179,7 @@ void SpiltDataBoot(int CentMin, int CentMax, int PtOpt){
 	EffInfoTree_New = EffInfoTree->CloneTree(0);
 	EffInfoTree_NewFit = EffInfoTree->CloneTree(0);
 	EffInfoTree_NewFit->SetObject("EffInfoTreeFit","EffInfoTreeFit");
-	MuonInfoTree_New = MuonInfoTree->CloneTree(0);
+//	MuonInfoTree_New = MuonInfoTree->CloneTree(0);
 
 //	cout << "NEvents = " << NEvents << endl;
 
@@ -225,17 +225,17 @@ void SpiltDataBoot(int CentMin, int CentMax, int PtOpt){
 		EffInfoTree_New = EffInfoTree->CloneTree(0);
 		EffInfoTree_NewFit = EffInfoTree->CloneTree(0);
 		EffInfoTree_NewFit->SetObject("EffInfoTreeFit","EffInfoTreeFit");
-		MuonInfoTree_New = MuonInfoTree->CloneTree(0);
+	//	MuonInfoTree_New = MuonInfoTree->CloneTree(0);
 
 
 
 		for(int j = 0; j < SampleSize; j++){
 
 			EffInfoTree->GetEntry(EventVec[j]);
-			MuonInfoTree->GetEntry(EventVec[j]);
+			//MuonInfoTree->GetEntry(EventVec[j]);
 
 			EffInfoTree_New->Fill();
-			MuonInfoTree_New->Fill();
+//			MuonInfoTree_New->Fill();
 			if(BsizeNew > 0) EffInfoTree_NewFit->Fill();
 
 		}

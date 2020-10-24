@@ -1,5 +1,5 @@
 i=0
-f=1000
+f=10
 
 
 
@@ -7,8 +7,8 @@ CentMin=0
 CentMax=90
 
 
-PtMin=7
-PtMax=10
+PtMin=15
+PtMax=20
 
 while [ $i -lt $f ]
 

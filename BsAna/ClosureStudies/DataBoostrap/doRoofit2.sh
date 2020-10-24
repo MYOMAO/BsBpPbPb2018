@@ -42,7 +42,7 @@ CENTPbPbMAX=90
 #INPUTDATAPbPbCANDWISE_BS="./flat_trees/selected_data_ntphi_PbPb_2018_new_train_BDT.root"  
 
 
-INPUTMCPbPbCANDWISE_BS="/export/d00/scratch/zzshi/CMSSW_7_5_8_patch3/Merge/2018Ana/BsRAA2015RunII/NunoClosure/New/0-90/10-50/EffInfo_MC_Closure-1.root"
+INPUTMCPbPbCANDWISE_BS="MCFitTemplate/EffInfo_MC_Closure-1.root"
 #INPUTDATAPbPbCANDWISE_BS="/export/d00/scratch/zzshi/CMSSW_7_5_8_patch3/Merge/2018Ana/BsRAA2015RunII/NunoClosure/CheckSystNuno/NoWeight/MCSPlitRanGen/0-90/10-50/5/MC_30.root"
 #INPUTDATAPbPbCANDWISE_BS="/export/d00/scratch/zzshi/CMSSW_7_5_8_patch3/Merge/2018Ana/BsRAA2015RunII/NunoClosure/CheckSystNuno/NoWeight/MCSPlitRanGen/0-90/10-50/5/MC_3.root"
 #INPUTDATAPbPbCANDWISE_BS="/export/d00/scratch/zzshi/CMSSW_7_5_8_patch3/Merge/2018Ana/BsRAA2015RunII/CrossSection/CheckSystNuno/NoWeight/EffInfo_0_90.root"
