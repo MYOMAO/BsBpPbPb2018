@@ -19,8 +19,8 @@ using std::endl;
 
 void MergeBin(){
 
-	TString File030 = "FinalFiles/NoTnP/NewCorr_0_30.root";
-	TString File3090 = "FinalFiles/NoTnP/NewCorr_30_90.root";
+	TString File030 = "FinalFiles/NewCorr_0_30.root";
+	TString File3090 = "FinalFiles/NewCorr_30_90.root";
 
 	TFile * fin030 = new TFile(File030.Data());
 	fin030->cd();
@@ -48,7 +48,7 @@ void MergeBin(){
 	hPtSigma->SetBinError(2,V2Err);
 
 
-	TFile * fout = new TFile("CrossSectionPbPbBs.root","RECREATE");
+	TFile * fout = new TFile("FinalFiles/NewCorr_0_30_90.root","RECREATE");
 	fout->cd();
 	hPtSigma->Write();
 	fout->Close();

@@ -203,18 +203,119 @@ For the systematic uncertainties, you will have to go inside the
 And update the systematic uncertainties:
 
 ``double SystErrBs[_nBins];``
+
 ``double TrackingErrBs[_nBins] ={0.10,0.10};``
+
 ``double SelErrBs[_nBins] ={0.0304,0.0226};``
+
 ``double PTErrBs[_nBins] ={0.00011,0.00029};``
+
 ``double AccErrBs[_nBins] ={0.0,0.0};``
+
 ``double PDFBErrBs[_nBins] ={0.0114,0.0592};``
+
 ``double PDFSErrBs[_nBins] ={0.0079,0.0182};``
+
 ``double  MCStatBs[_nBins] ={0.0236, 0.0676}``
 
 But these will be further discussed once we have finished the estimation of the statistical uncertainties and systematic uncertainties. This conclude the nominal final results section.
 
 
 ## Statistical Uncertainties Calculation: Data Bootstrapping ##
+
+Due to the nature of the data-average <1/acc * eff>, it will have unknown correlation between the data and the MC. To correctly estimate the statistical uncertainties of the corrected yield, we need to perform bootstrapping. The idea is to resample 1000 data-like sample smear by the Poisson process, compute the corrected yield distribution of the 1000 samples, and quote +/- of the mean with 68.27 as the statistical uncertainties. 
+
+The codes are located: ``BsAna/ClosureStudies/DataBoostrap/``. We first go to the folder:
+
+``cd BsAna/ClosureStudies/DataBoostrap/`` 
+
+Then, we first run the data splitting for our desired bin, for instance, 10 - 15 GeV/c and 0 - 90\%:
+
+``root -b -l -q SpiltDataBoot.C'(0,90,1)'``
+
+The first argument is the minimum centrality range. The second argument is the maximum centrality range. The third argument is the pt bin range: 
+
+``0 = 7 - 10``  
+
+``1 = 10 - 15``
+
+``2 = 15 - 20``
+
+``3 = 20 - 50 ``
+
+``-1 = 10 - 50``
+
+After this, we have constructed 1000 samples whose statistics are varied by the Poisson distribution. To change the number of samples, just go to the code ``SpiltDataBoot.C`` and change
+
+Line 171: ``NSet = 1000``
+
+Next, the we will perform the unbinned fits to all the samples to obtain the raw yield for the 1000 data-like samples. To do so, first view the ``parametersNew.h`` file and change:
+
+Line 44: ``double ptBins_full[nBins_full+1] = {15,20};``
+
+To our example 
+
+``double ptBins_full[nBins_full+1] = {10,15};``
+
+Also, go to the file ``FitAll.sh`` and change the pT and centrality bin:
+
+Line 1: ``i=0``
+Line 2: ``f=10``
+ 
+
+Line 6: ``CentMin=0``
+Line 7: ``CentMax=90``
+
+
+Line 10: ``PtMin=15``
+Line 11: ``PtMax=20``
+
+
+Here basically ``i`` and ``f`` basically stand for the begin and end file IDs. ``CentMin`` and ``CentMax`` mean the minimum and maximum centrality. ``PtMin`` and ``PtMax`` mean the minimum and maximum pT. Here simply change the PtMin and PtMax 
+
+Line 10: ``PtMin=10``
+Line 11: ``PtMax=15``
+
+Then after these changes, simply run:
+
+source FitAll.sh
+
+
+After a long time, all the fits for the 1000 files finished. Then we will now estimate the statistical uncertainties on the efficiency and corrected yield: 
+
+root -b -l -q SampleClosure.C'(0,90,1)'
+
+Then you can see the results in the print out:
+
+``Method 1 Eff:  Percentile = 0.130025``
+``Method 2 Eff:  PercentileUp = 0.131425  PercentileDown = 0.121172``
+
+For the symmetric and asymmetric statistical uncertainties on the efficiency. 
+
+``Method 1:  Percentile = 0.248623``
+``Method 2:  PercentileUp = 0.223399  PercentileDown = 0.24879``
+
+For the symmetric and asymmetric statistical uncertainties on the corrected yield. 
+
+The plots for the raw yield distribution, efficiency distribution, sample size and corrected yield distribution are save at ``PlotsRaw``, ``PlotsEff``, and ``Plots`` respectfully. 
+
+
+Finally, again, remember to change the numerical value in
+
+``BsAna/Nominal/Efficiency/StatReCal4Bins.h``
+
+ of the second component of the array
+ 
+ ``double StatUpBs[nBins] = {0.429,0.230,0.211,0.210};``
+``double StatDownBs[nBins] = {0.414,0.214,0.204,0.195};``
+
+Repeat the steps for all other pT and centrality bins and change the numerical value manually for the StatReCal*Bin*.h header files. This ends the estimation for the statistical uncertainties studies via data bootstrapping of the corrected yield. 
+
+## Systematic Uncertainties Calculation##
+
+### PDF Variation ###
+
+
 
 ## Contact ##
 

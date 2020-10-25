@@ -44,13 +44,6 @@ void MCefficiency(int isPbPb=0,TString inputmc="", TString selmcgen="",TString s
   centMin = centmin;
   centMax = centmax;
 
-  /*
-  if(useFiducial)
-    {
-      cut_recoonly=Form("%s&&((Bgenpt>5&&Bgenpt<10&&TMath::Abs(By)>1.5)||(Bgenpt>10))",cut_recoonly.Data());
-      cut=Form("%s&&((Bgenpt>5&&Bgenpt<10&&TMath::Abs(By)>1.5)||(Bgenpt>10))",cut.Data());
-    }
-	*/
 
 	 if(useFiducial)
     {
@@ -80,8 +73,6 @@ void MCefficiency(int isPbPb=0,TString inputmc="", TString selmcgen="",TString s
   gStyle->SetEndErrorSize(0);
   gStyle->SetMarkerStyle(20);
    
-  //For 2018 PbPb MC
-  //TFile* infMC = new TFile("/raid5/data/gwangjun/MC_splot_BDT_trk_merged.root");
   TFile* infMC = new TFile(inputmc.Data());
   TTree* ntMC = (TTree*)infMC->Get("Bfinder/ntKp");
   ntMC->AddFriend("hltanalysis/HltTree");
@@ -101,39 +92,12 @@ void MCefficiency(int isPbPb=0,TString inputmc="", TString selmcgen="",TString s
   ntGen->AddFriend("skimanalysis/HltTree");
   ntGen->AddFriend("BDT");
 
-  /*
-  //For 2015 PbPb, pp MC
-  TFile* infMC = new TFile(inputmc.Data());
-  TTree* ntMC = (TTree*)infMC->Get("ntKp");
-  ntMC->AddFriend("ntHlt");
-  ntMC->AddFriend("ntHi");
-  ntMC->AddFriend("ntGen");
-  ntMC->AddFriend("ntSkim");
-  TTree* ntGen = (TTree*)infMC->Get("ntGen");
-  ntGen->AddFriend("ntHlt");
-  ntGen->AddFriend("ntHi");
-  ntGen->AddFriend("ntKp");
-  ntGen->AddFriend("ntSkim");
-  */
-  
   // optimal weights
   TCut weighpthat = "1";
   TCut weightGpt = "1";
   TCut weightBgenpt = "1";
   TCut weightHiBin = "1";
   TCut weightPVz = "1";
-/*	
-  if(useweight==0) { //pp
-    weighpthat = "pthatweight";
-    weightPVz = "1.055564*TMath::Exp(-0.001720*(PVz+2.375584)*(PVz+2.375584))";
-    weightGpt = "0.599212+-0.020703*Gpt+0.003143*Gpt*Gpt+-0.000034*Gpt*Gpt*Gpt";
-    weightBgenpt = "0.599212+-0.020703*Bgenpt+0.003143*Bgenpt*Bgenpt+-0.000034*Bgenpt*Bgenpt*Bgenpt";
-    }
-  */
-
-//  TH1D* hPtMCNoWeight = new TH1D("hPtMCNoWeight","",nBins,ptBins);
- // TH1D* hPtGenNoWeight = new TH1D("hPtGenNoWeight","",nBins,ptBins);
-
 
 
 
@@ -156,24 +120,6 @@ void MCefficiency(int isPbPb=0,TString inputmc="", TString selmcgen="",TString s
 		weightGpt = "(3.00448277-0.35865276*Gpt+0.01997413*Gpt*Gpt-0.00042585*Gpt*Gpt*Gpt+0.00000315*Gpt*Gpt*Gpt*Gpt)";
 		weightBgenpt = "(3.00448277-0.35865276*Bgenpt+0.01997413*Bgenpt*Bgenpt-0.00042585*Bgenpt*Bgenpt*Bgenpt+0.00000315*Bgenpt*Bgenpt*Bgenpt*Bgenpt)";
 	}
-    //weightBgenpt = "(2.907795+-0.436572*Bgenpt+0.006372*Bgenpt*Bgenpt)*TMath::Exp(-0.157563*Bgenpt)+1.01308";    
-    //weightGpt = "(3.506006+0.963473*Gpt+-0.258731*Gpt*Gpt)*TMath::Exp(-0.386065*Gpt)+1.139897";
-    //weightBgenpt = "(3.506006+0.963473*Bgenpt+-0.258731*Bgenpt*Bgenpt)*TMath::Exp(-0.386065*Bgenpt)+1.139897";
-	//weightBgenpt = "(3.00448277-0.35865276*Bgenpt+0.01997413*Bgenpt*Bgenpt-0.00042585*Bgenpt*Bgenpt*Bgenpt+0.00000315*Bgenpt*Bgenpt*Bgenpt*Bgenpt)*(1.19015513+-0.04226922*Bgenpt+0.00289021*Bgenpt*Bgenpt+-0.00007469*Bgenpt*Bgenpt*Bgenpt+0.00000064*Bgenpt*Bgenpt*Bgenpt*Bgenpt)";
-    //weightGpt = "(3.76547732-0.48262502*Gpt+0.02740408*Gpt*Gpt-0.00060885*Gpt*Gpt*Gpt+0.00000478*Gpt*Gpt*Gpt*Gpt)";
-    //weightBgenpt = "(3.76547732-0.48262502*Bgenpt+0.02740408*Bgenpt*Bgenpt-0.00060885*Bgenpt*Bgenpt*Bgenpt+0.00000478*Bgenpt*Bgenpt*Bgenpt*Bgenpt)";
-    //weightGpt = "(2.32807290-0.24845949*Gpt+0.01337001*Gpt*Gpt-0.00026320*Gpt*Gpt*Gpt+0.00000170*Gpt*Gpt*Gpt*Gpt)";
-    //weightBgenpt = "(2.32807290-0.24845949*Bgenpt+0.01337001*Bgenpt*Bgenpt-0.00026320*Bgenpt*Bgenpt*Bgenpt+0.00000170*Bgenpt*Bgenpt*Bgenpt*Bgenpt)";
-    
-
-  /*
-  TH1D* hPtMC = new TH1D("hPtMC","",_nBins,_ptBins);
-  TH1D* hPtMCrecoonly = new TH1D("hPtMCrecoonly","",_nBins,_ptBins);
-  TH1D* hPtGen = new TH1D("hPtGen","",_nBins,_ptBins);
-  TH1D* hPtGenAcc = new TH1D("hPtGenAcc","",_nBins,_ptBins);
-  TH1D* hPtGenAccWeighted = new TH1D("hPtGenAccWeighted","",_nBins,_ptBins);
-  */
-
   //double LowBinWidth = 0.5;
  
   TCut muid1 = "muid1";
@@ -215,35 +161,7 @@ void MCefficiency(int isPbPb=0,TString inputmc="", TString selmcgen="",TString s
   ntGen->Project("hPtGenAcc","Gpt",TCut(weighpthat)*TCut(weightGpt)*(TCut(selmcgenacceptance.Data())));
   ntGen->Project("hPtGenAccWeighted","Gpt",TCut(weighpthat)*TCut(weightGpt)*TCut(weightHiBin)*TCut(weightPVz)*(TCut(selmcgenacceptance.Data())));
 
-  /*
-  ////// tag & probe scaling factor
-  for(int i = 0; i < _nBins; i++){printf("%.2f, ", hPtMC->GetBinContent(i+1));}printf("\n");
-  double sf_pp[8] = {1., 227977.02/207901.56, 632864.53/606712.42, 408808.07/399583.96, 275911.15/272909.48, 85362.85/85846.52, 1., 1.};//SUBJECT TO CHANGE!
-  //double sf_pbpb[1] = {1.0911};
-  double sf_pbpb[6] = {1.1142, 1.1300, 1.0927, 1.0601, 1.0231, 1.0099};//corrected yield calculation for inclusive pt cent0-90%
-  //double sf_pbpb[6] = {1.1179, 1.1242, 1.0921, 1.0594, 1.0232, 1.0100};//corrected yield calculation for inclusive pt cent0-30%
-  //double sf_pbpb[6] = {1.1065, 1.1482, 1.0946, 1.0625, 1.0230, 1.0097};//corrected yield calculation for inclusive pt cent30-90%
-  //double sf_pbpb[8] = {1.0492, 1.1284, 1.1300, 1.0927, 1.0601, 1.0231, 1.0099, 1.0033};// nominal
-  //double sf_pbpb[8] = {1.0667, 1.1201, 1.1320, 1.0894, 1.0577, 1.0219, 1.0096, 1.0032};// prefilter
-  //double sf_pbpb[4] = {1.1142, 1.1300, 1.0927, 1.0480};// Bs bin
-  //double sf_pbpb[7] = {1.0587, 1.1259, 1.1308, 1.0957, 1.0624, 1.0208, 1.0005};// FONLL
-  //double sf_pbpb[7] = {1.0499, 1.1294, 1.1292, 1.0927, 1.0610, 1.0203, 1.0033}; // Extrapolated pp Newbin
-  //double sf_pbpb[7] = {1.0499, 1.1294, 1.1292, 1.0927, 1.0610, 1.0203, 1.0005};// Extrapolated pp
-  //double sf_pbpb[5] = {1.1264, 1.1308, 1.0957, 1.0625, 1.0208};// 2015 PbPb
-  for(int i = 0; i < _nBins; i++){
-    if(label == "pp"){
-      hPtMC->SetBinContent(i+1, hPtMC->GetBinContent(i+1)*sf_pp[i]);
-      hPtMCrecoonly->SetBinContent(i+1, hPtMCrecoonly->GetBinContent(i+1)*sf_pp[i]);
-    }
-    if(label == "PbPb"){
-      hPtMC->SetBinContent(i+1, hPtMC->GetBinContent(i+1)*sf_pbpb[i]);
-      hPtMCrecoonly->SetBinContent(i+1, hPtMCrecoonly->GetBinContent(i+1)*sf_pbpb[i]);
-    }
-  }
-  for(int i = 0; i < _nBins; i++){printf("%.2f, ", hPtMC->GetBinContent(i+1));}printf("\n");
-  */
 
-  
   ntMC->Project("hPthat","pthat","1");
   ntMC->Project("hPthatweight","pthat","pthatweight");
 
@@ -402,116 +320,7 @@ void MCefficiency(int isPbPb=0,TString inputmc="", TString selmcgen="",TString s
   TCanvas* cinvEff2D = new TCanvas("","",600,600);
   cinvEff2D->cd();
   invEff2D->Draw("COLZ");
-  //cinvEff2D->SaveAs(Form("plotAverageEff/invEff2D_Cent%.0f-%.0f.png",centmin,centmax));
-  //cinvEff2D->SaveAs(Form("plotAverageEff/invEff2D_Cent%.0f-%.0f.pdf",centmin,centmax));
-  
 
-  /*
-  TFile* filenominal = new TFile("ptshape/BDT/MCstudiesPbPb_nominal_Bsbin.root");
-  TFile* filenoweight = new TFile("ptshape/BDT/MCstudiesPbPb_noweight_Bsbin.root");
-  TFile* fileplus = new TFile("ptshape/BDT/MCstudiesPbPb_plus.root");
-  TFile* fileminus = new TFile("ptshape/BDT/MCstudiesPbPb_minus.root");
-  TH1D* hEffnominal = (TH1D*)filenominal->Get("hEff");
-  hEffnominal->GetXaxis()->CenterTitle();
-  hEffnominal->GetYaxis()->CenterTitle();
-  hEffnominal->GetXaxis()->SetTitle("p_{T} (GeV/c)");
-  hEffnominal->GetYaxis()->SetTitle("#alpha x #epsilon");
-  hEffnominal->GetXaxis()->SetTitleOffset(0.9);
-  hEffnominal->GetYaxis()->SetTitleOffset(0.95);
-  hEffnominal->GetXaxis()->SetTitleSize(0.05);
-  hEffnominal->GetYaxis()->SetTitleSize(0.05);
-  hEffnominal->GetXaxis()->SetTitleFont(42);
-  hEffnominal->GetYaxis()->SetTitleFont(42);
-  hEffnominal->GetXaxis()->SetLabelFont(42);
-  hEffnominal->GetYaxis()->SetLabelFont(42);
-  hEffnominal->GetXaxis()->SetLabelSize(0.035);
-  hEffnominal->GetYaxis()->SetLabelSize(0.035);
-  //hEffnominal->SetLineColor(kBlue);
-  //hEffnominal->SetMarkerColor(kBlack);
-  TH1D* hEffnoweight = (TH1D*)filenoweight->Get("hEff");
-  hEffnoweight->GetXaxis()->CenterTitle();
-  hEffnoweight->GetYaxis()->CenterTitle();
-  hEffnoweight->GetXaxis()->SetTitle("p_{T} (GeV/c)");
-  hEffnoweight->GetYaxis()->SetTitle("#alpha x #epsilon");
-  hEffnoweight->GetXaxis()->SetTitleOffset(0.9);
-  hEffnoweight->GetYaxis()->SetTitleOffset(0.95);
-  hEffnoweight->GetXaxis()->SetTitleSize(0.05);
-  hEffnoweight->GetYaxis()->SetTitleSize(0.05);
-  hEffnoweight->GetXaxis()->SetTitleFont(42);
-  hEffnoweight->GetYaxis()->SetTitleFont(42);
-  hEffnoweight->GetXaxis()->SetLabelFont(42);
-  hEffnoweight->GetYaxis()->SetLabelFont(42);
-  hEffnoweight->GetXaxis()->SetLabelSize(0.035);
-  hEffnoweight->GetYaxis()->SetLabelSize(0.035);
-  TH1D* hEffplus = (TH1D*)fileplus->Get("hEff");
-  hEffplus->GetXaxis()->CenterTitle();
-  hEffplus->GetYaxis()->CenterTitle();
-  hEffplus->GetXaxis()->SetTitle("p_{T} (GeV/c)");
-  hEffplus->GetYaxis()->SetTitle("#alpha x #epsilon");
-  hEffplus->GetXaxis()->SetTitleOffset(0.9);
-  hEffplus->GetYaxis()->SetTitleOffset(0.95);
-  hEffplus->GetXaxis()->SetTitleSize(0.05);
-  hEffplus->GetYaxis()->SetTitleSize(0.05);
-  hEffplus->GetXaxis()->SetTitleFont(42);
-  hEffplus->GetYaxis()->SetTitleFont(42);
-  hEffplus->GetXaxis()->SetLabelFont(42);
-  hEffplus->GetYaxis()->SetLabelFont(42);
-  hEffplus->GetXaxis()->SetLabelSize(0.035);
-  hEffplus->GetYaxis()->SetLabelSize(0.035);
-  hEffplus->SetLineColor(kBlue);
-  hEffplus->SetMarkerColor(kBlack);
-  TH1D* hEffminus = (TH1D*)fileminus->Get("hEff");
-  hEffminus->GetXaxis()->CenterTitle();
-  hEffminus->GetYaxis()->CenterTitle();
-  hEffminus->GetXaxis()->SetTitle("p_{T} (GeV/c)");
-  hEffminus->GetYaxis()->SetTitle("#alpha x #epsilon");
-  hEffminus->GetXaxis()->SetTitleOffset(0.9);
-  hEffminus->GetYaxis()->SetTitleOffset(0.95);
-  hEffminus->GetXaxis()->SetTitleSize(0.05);
-  hEffminus->GetYaxis()->SetTitleSize(0.05);
-  hEffminus->GetXaxis()->SetTitleFont(42);
-  hEffminus->GetYaxis()->SetTitleFont(42);
-  hEffminus->GetXaxis()->SetLabelFont(42);
-  hEffminus->GetYaxis()->SetLabelFont(42);
-  hEffminus->GetXaxis()->SetLabelSize(0.035);
-  hEffminus->GetYaxis()->SetLabelSize(0.035);
-  hEffminus->SetLineColor(kGreen);
-  hEffminus->SetMarkerColor(kBlack);
-  
-  TH1D* ptshapenoweight = (TH1D*)hEffnoweight->Clone("ptshapenoweight");
-  ptshapenoweight->Divide(hEffnominal);
-  TH1D* ptshapeplus = (TH1D*)hEffplus->Clone("ptshapeplus");
-  ptshapeplus->Divide(hEffnominal);
-  TH1D* ptshapeminus = (TH1D*)hEffminus->Clone("ptshapeminus");
-  ptshapeminus->Divide(hEffnominal);
-  TCanvas* c100 = new TCanvas("","",600,600);
-  c100->cd();
-  ptshapenoweight->SetMaximum(1.5);
-  ptshapenoweight->SetMinimum(0.5);
-  ptshapenoweight->GetXaxis()->SetTitle("p_{T} (GeV/c)");
-  ptshapenoweight->GetYaxis()->SetTitle("#alpha x #epsilon Ratio");
-  ptshapenoweight->Draw();
-  //ptshapeplus->Draw("same");
-  //ptshapeminus->Draw("same");
-  TLegend *leg100 = new TLegend(0.45,0.70,0.75,0.80,NULL,"brNDC");
-  leg100->SetBorderSize(0);
-  leg100->SetTextSize(0.04);
-  leg100->SetTextFont(42);
-  leg100->SetFillStyle(0);
-  leg100->AddEntry(ptshapenoweight,"Data/MC noweight","l");
-  //leg100->AddEntry(ptshapeplus,"Data/MC +1 #sigma","l");
-  //leg100->AddEntry(ptshapeminus,"Data/MC -1 #sigma","l");
-  leg100->Draw("same");
-  c100->SaveAs("ptshape/ptshape_BDT_datadriven_Bsbin.png");
-  c100->SaveAs("ptshape/ptshape_BDT_datadriven_Bsbin.pdf");
-  for(int j=0;j<nBins;j++)
-    {
-      printf("p_t bins %.0f-%.0f ptshape uncertainty(noweight): %f (percent)\n",_ptBins[j],_ptBins[j+1],100.0*(ptshapenoweight->GetBinContent(j+1)-1.0));
-      //printf("p_t bins %.0f-%.0f ptshape uncertainty(plus): %f (percent)\n",_ptBins[j],_ptBins[j+1],100.0*(ptshapeplus->GetBinContent(j+1)-1.0));
-      //printf("p_t bins %.0f-%.0f ptshape uncertainty(minus): %f (percent)\n",_ptBins[j],_ptBins[j+1],100.0*(ptshapeminus->GetBinContent(j+1)-1.0));
-      //printf("p_t bins %.0f-%.0f ptshape uncertainty(maximum): %f (percent)\n",_ptBins[j],_ptBins[j+1],TMath::Max(TMath::Abs(100.0*(ptshapeplus->GetBinContent(j+1)-1.0)),TMath::Abs(100.0*(ptshapeminus->GetBinContent(j+1)-1.0))));      
-    }
-  */
   
 
   TH2F* hemptyEff=new TH2F("hemptyEff","",50,_ptBins[0]-5.,_ptBins[_nBins]+5.,10,0.,1.);  

@@ -992,7 +992,7 @@ void ReAnaEffNew(int CentMin, int CentMax,	const int NBins,	int DoTwoD, int drop
 
 
 	//	TFile  * foutCorr = new TFile(Form("%dBptBins/NewCorr_%d_%d.root",NBptBins,CentMin,CentMax),"RECREATE");
-	TFile * foutCorr = new TFile(Form("FinalFiles/%s/NewCorr_%d_%d.root",WeightName.Data(),CentMin,CentMax),"RECREATE");
+	TFile * foutCorr = new TFile(Form("FinalFiles/NewCorr_%d_%d.root",CentMin,CentMax),"RECREATE");
 
 
 	foutCorr->cd();
@@ -1004,7 +1004,7 @@ void ReAnaEffNew(int CentMin, int CentMax,	const int NBins,	int DoTwoD, int drop
 	if(NBins == 4){
 
 		//	TFile  * PtDiffFile = new TFile(Form("%dBptBins/PtDiffFile_%d_%d.root",NBptBins,CentMin,CentMax),"RECREATE");
-		TFile * PtDiffFile = new TFile(Form("FinalFiles/%s/PtDiffFile_%d_%d.root",WeightName.Data(),CentMin,CentMax),"RECREATE");
+		TFile * PtDiffFile = new TFile(Form("FinalFiles/PtDiffFile_%d_%d.root",CentMin,CentMax),"RECREATE");
 
 		PtDiffFile->cd();
 
