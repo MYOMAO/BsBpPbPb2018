@@ -311,7 +311,7 @@ Finally, again, remember to change the numerical value in
 
 Repeat the steps for all other pT and centrality bins and change the numerical value manually for the StatReCal*Bin*.h header files. This ends the estimation for the statistical uncertainties studies via data bootstrapping of the corrected yield. 
 
-## Systematic Uncertainties Calculation##
+## Systematic Uncertainties Calculation ##
 
 ### PDF Variation ###
 
