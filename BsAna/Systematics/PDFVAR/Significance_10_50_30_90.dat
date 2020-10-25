@@ -16,3 +16,12 @@ background   1st  10.7142
 background   2nd  10.6875
 background   3rd  10.9372
 background   3rd  10.9372
+     11.0991
+signal   3gauss  10.9299
+signal   fixed  11.0762
+signal   scal+  11.0493
+signal   scal-  11.1348
+background   1st  10.7141
+background   2nd  10.6875
+background   3rd  10.6762
+background   3rd  10.6762

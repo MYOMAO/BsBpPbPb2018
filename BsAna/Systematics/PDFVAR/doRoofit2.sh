@@ -33,8 +33,8 @@ CENTPbPbMAX=90
 #INPUTDATAPbPbCANDWISE_BS="/export/d00/scratch/zzshi/CMSSW_7_5_8_patch3/Merge/2018Ana/BsRAA2015RunII/CrossSection/CheckSystNuno/NoWeight/EffInfo_0_90.root"
 
 
-INPUTMCPbPbCANDWISE_BS="/export/d00/scratch/zzshi/CMSSW_7_5_8_patch3/Merge/2018Ana/BsRAA2015RunII/NunoClosure/New/0-90/5-50/EffInfo_MC_Closure-1.root"
-INPUTDATAPbPbCANDWISE_BS="/export/d00/scratch/zzshi/CMSSW_7_5_8_patch3/Merge/2018Ana/BsRAA2015RunII/CrossSection/CheckSystNuno/NoTnP/EffInfo_0_90.root"
+INPUTMCPbPbCANDWISE_BS="FitInputs/EffInfo_MC_Closure-1.root"
+INPUTDATAPbPbCANDWISE_BS="FitInputs/EffInfo_0_90.root"
 
 #INPUTMCPbPbCANDWISE_BS="/export/d00/scratch/zzshi/CMSSW_7_5_8_patch3/Merge/2018Ana/BsRAA2015RunII/NunoClosure/CheckSystNuno/NoWeight/MCSPlitRanGen/0-90/10-50/5/MC_100.root"
 #INPUTDATAPbPbCANDWISE_BS="/export/d00/scratch/zzshi/CMSSW_7_5_8_patch3/Merge/2018Ana/BsRAA2015RunII/NunoClosure/CheckSystNuno/NoWeight/MCSPlitRanGen/0-90/10-50/5/MC_100.root"

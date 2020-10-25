@@ -315,6 +315,139 @@ Repeat the steps for all other pT and centrality bins and change the numerical v
 
 ### PDF Variation ###
 
+We know there is systematic uncertainties on the fits, both the background and signal components. This is called the PDF Variation. Therefore, we create the codes to estimate the systematic uncertainties.
+
+Before running the codes, you need to check the pT and centrality range for PDF variation. The pT range is set at ``parametersNew.h`` and the centrality range is set at the doRoofit2.sh. The change is the same as above 
+
+For pt it is 
+
+Line 44 ``double ptBins_full[nBins_full+1] = {10,50};``
+
+For centrality it is
+
+Line 6: ``CentMin=0``
+Line 7: ``CentMax=90``
+
+
+To run the codes, simply do:
+
+source doRooFit2.sh
+
+The plots are saved at ``plotFits/final_roofit`` and the text files for all different variation fit function are store at ``OutText/``. An example of the file ``OutTexts/PDF0_90_10_50.dat`` is shown here:
+
+``PDFVAR:    VarFunc:      Yield: 80.2495``
+
+``PDFVAR: signal   VarFunc: 3gauss     Yield: 79``
+
+``PDFVAR: signal   VarFunc: fixed     Yield: 80.09``
+
+``PDFVAR: signal   VarFunc: scal+     Yield: 81.3192``
+
+``PDFVAR: signal   VarFunc: scal-     Yield: 78.9276``
+
+``PDFVAR: background   VarFunc: 1st     Yield: 78.9841``
+
+``PDFVAR: background   VarFunc: 2nd     Yield: 80.8699``
+
+``PDFVAR: background   VarFunc: 3rd     Yield: 80.7243``
+
+``PDFVAR: background   VarFunc: 3rd     Yield: 80.7243``
+
+Basically, you can simply calculate and quote the largest percentage deviation from the nominal raw yield as the signal and background PDF systematics. Then add these two into quadrature and quote that number as the total PDF systematic uncertainty. Repeat the steps for each pT and centrality bin and keep in mind to update the numerical values at the codes: ``BsAndBP/FinalPlots/B*Bin*.C`` in the corresponding PDF background and signal arrays.
+
+
+### TnP Systematics ###
+
+Again, we also have the TnP systematic uncertainties. We have built our codes following the workflow for TnP correction and systematic estimation on the MC 2D map here:
+
+Nominal: ``https://github.com/MYOMAO/BsBpPbPb2018/blob/master/TnPFlowChart/TnP\%20Nominal.png``
+
+Systematics: ``https://github.com/MYOMAO/BsBpPbPb2018/blob/master/TnPFlowChart/TnP\%20Systematics.png``
+
+Calculation Scheme: ``https://github.com/MYOMAO/BsBpPbPb2018/blob/master/TnPFlowChart/TnP\%20Systematics\%20Scheme.png``
+
+
+To estimate the uncertainties, we will simply run the script:
+
+``source TnPSyst.sh``
+
+The printout of the numerical values can be found at, for instance, for the pT differential studies
+
+``i = 0   Upper TnP Syst = 0.00824708``
+``i = 0   Lower TnP Syst = 0.00811191``
+``i = 1   Upper TnP Syst = 0.0142312``
+``i = 1   Lower TnP Syst = 0.0138036``
+``i = 2   Upper TnP Syst = 0.0172237``
+``i = 2   Lower TnP Syst = 0.0166216``
+``i = 3   Upper TnP Syst = 0.0172501``
+``i = 3   Lower TnP Syst = 0.01664``
+
+Note that the script runs the code ``ReAnaEffTnPSyst.C``. The last option is for the TnP systematic on a specific TnP component:
+
+``0 = muid``
+
+``1 = trk``
+
+``2 = trg``
+
+``3 = total = muid * trk * trg``
+
+The muid, trk, trk, and total results are saved at the folders ``TnPPlots/muid/``, ``TnPPlots/trk/``, ``TnPPlots/trg/``, and ``TnPPlots/total/`` respectfully. 
+
+Again, keep in mind to update the numerical values of the TnP systematic uncertainties in the ``BsAndBP/FinalPlots/B*Bin*.C`` files.
+
+
+### pT Shape Systematics ###
+
+We know that there is systematic uncertainties due to the unknown of the Bs pT shape. It will affect the corrected yield but we should expect them to be small. To quantify this uncertainties, we basically apply the Bpt weights functions to the RECO and GEN and generate new 2D maps. To run the codes and get the pT Shape Systematics, we simply run the scripy:
+
+``source PtShapSyst.sh``
+
+Then for the pT differential studies, look at the print out:
+
+``i = 0  CorrYieldDiff =  865604``
+``i = 1  CorrYieldDiff =  705950``
+``i = 2  CorrYieldDiff =  231447``
+``i = 3  CorrYieldDiff =  121349``
+
+For the centrality and inclusive bin studies, look at the print out:
+
+``FinalCorrYieldComp = 1.18381e+06     FinalCorrYieldErr = 22178.2``
+
+Note that the file ``PtShapSyst.sh`` runs the code ``ReAnaEffPtShape.C``. The pt shape function variation option is the same as the ones listed above:
+
+
+``0 = no pT weight``
+``11 = linear function``
+``12 = quadratic``
+``13 = linear + inverse``
+``14 = linear + square root``
+``15 =  linear + log``
+
+There are other option such as 
+
+``1 = FONLL``
+
+These are not considered in our variation. But even if you include them, the systematic uncertainties will still be VERY SMALL and will not change the total systematic uncertainties. 
+
+Again, like the PDF variation, we collect all these corrected yield numerical values, take the percent deviation from the nominal, and quote the largest one as the pT shape systematics. 
+
+Again, keep in mind to update the numerical values of the pt shape systematic uncertainties in the ``BsAndBP/FinalPlots/B*Bin*.C`` files.
+
+
+
+### MC-Data Disagreement ###
+
+Next is the imperfect agreement between the data and the MC. To estimate this systematic uncertainties, essentially, we use the sPLOT technique to extract the weight for the disagreement between the MC-
+
+
+
+
+
+
+
+
+
 
 
 ## Contact ##
