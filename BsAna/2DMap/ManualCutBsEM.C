@@ -306,7 +306,7 @@ void ManualCutBsEM(int CentMin, int CentMax, int TwoShot){
 
 
 
-	TFile * fout = new TFile(Form("/data/szhaozho/BsBP2018PbPb/Codes/BsAna/Nominal/Efficiency/BeforeMerge/EffInfo_%d_%d.root",CentMin,CentMax),"RECREATE");
+	TFile * fout = new TFile(Form("../Nominal/Efficiency/NewTnPScheme/EffInfo_%d_%d.root",CentMin,CentMax),"RECREATE");
 
 	fout->cd();
 	TTree* EffInfoTree = new TTree("EffInfoTree","EffInfoTree");	

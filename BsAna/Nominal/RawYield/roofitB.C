@@ -253,16 +253,6 @@ void roofitB(int doubly = 0, TString tree = "ntphi", int full = 1, int usePbPb =
 	RooCurve* modelcurve = new RooCurve();
 	std::cout<<"Created roocurve"<<std::endl;
 
-	//weightgen = weightgen_pp;
-	weightmc  = weightmc_pp;
-	if(usePbPb){
-		weightgen = weightgen_PbPb;
-		//weightmc = weightmc_PbPb;
-		if(doweight == 0 ) weightmc = "1"; 
-		if(doweight == 1) weightmc = "pthatweightNew";
-		std::cout<<"weights defined"<<std::endl;	
-
-	}
 
 	TString _prefix = "";
 	TString _isMC = "data";
@@ -676,16 +666,6 @@ void roofitB(int doubly = 0, TString tree = "ntphi", int full = 1, int usePbPb =
 
 
 	std::cout<<"CHEGUEI AQUI"<<std::endl;
-
-	/*if(fitOnSaved == 1){
-	  outf->Close();	
-	  return;
-	  }
-	  ntMC->Project("hPtMC",varExp.Data(),TCut(weightmc)*(TCut(selmc.Data())&&"(BgenNew==23333)"));
-	  divideBinWidth(hPtMC);
-	//	ntGen->Project("hPtGen","Gpt",TCut(weightgen)*(TCut(selmcgen.Data())));
-	//	divideBinWidth(hPtGen);*/
-
 	TCanvas* cPt =  new TCanvas("cPt","",600,600);
 	cPt->SetLogy();
 	hPt->SetXTitle("B_{s} p_{T} (GeV/c)");

@@ -28,8 +28,6 @@ int customizedOpt = 0; //1: remove pt weight, 2: do tk eta weihting
 
 void MCefficiency(int isPbPb=0, TString inputmc="", TString selmcgen="", TString selmcgenacceptance="", TString cut_recoonly="", TString cut="", TString _varExp = "", TString _varGenExp = "", TString label="", TString outputfile="", TString outplotf="", int PbPbweight=0, Float_t centmin=0., Float_t centmax=100.)
 {    
-	int dofine = 1;
-
 
 	TString varExp = _varExp;
 	TString varGenExp = _varGenExp;
@@ -322,22 +320,6 @@ void MCefficiency(int isPbPb=0, TString inputmc="", TString selmcgen="", TString
 	ntMC->Project("hPtMCrecoonly",varExp.Data(), varExp.Data(),(TCut(muid1) * TCut(trk1) * TCut(trg1) * TCut(muid2) * TCut(trk2) * TCut(trg2))*
 			TCut(weighpthat)*TCut(weightBgenpt)*TCut(weightHiBin)*TCut(weightPVz)*(TCut(cut_recoonly.Data())&&"(Bgen==23333)"));
 
-	//adding fine eff correction//
-
-
-	//	ntMC->Project("hPtMC",varExp.Data(),TCut(weighpthat)*TCut(weightBgenpt)*TCut(weightHiBin)*TCut(weightPVz)*TCut(Form("%s && Bgen==23333", cut.Data())));
-	//	ntMC->Project("hPtMCrecoonly",varExp.Data(),TCut(weighpthat)*TCut(weightBgenpt)*TCut(weightHiBin)*TCut(weightPVz)*TCut(Form("%s && Bgen==23333", cut.Data())));
-
-
-	//weightGpt = "1.844009 + 0.058935 * Bgenpt - 0.454120 * sqrt(Gpt)";
-	//weightBgenpt = "1.844009 + 0.058935 * Bgenpt - 0.454120 * sqrt(Bgenpt)";
-
-	//	ntMC->Project("hPtMC","Bpt",TCut(weighpthat)*TCut(weightBgenpt)*TCut(weightHiBin)*TCut(weightPVz)*(TCut(cut.Data())&&"(Bgen==23333)"));
-	//  ntMC->Project("hPtMCrecoonly","Bpt",TCut(weighpthat)*TCut(weightBgenpt)*TCut(weightHiBin)*TCut(weightPVz)*(TCut(cut_recoonly.Data())&&"(Bgen==23333)"));
-
-	
-
-
 	ntGen->Project("hPtGen",varGenExp.Data(),
 			TCut(weighpthat)*TCut(weightGpt)*(TCut(selmcgen.Data())));
 	ntGen->Project("hPtGenWeighted",varGenExp.Data(),
@@ -357,803 +339,479 @@ void MCefficiency(int isPbPb=0, TString inputmc="", TString selmcgen="", TString
 	cout << "hPtGen = " << hPtGen->Integral() << endl;
 	cout << "hPtGenWeighted = " << hPtGenWeighted->Integral() << endl;
 
-	if(dofine == 1){
-		cout << "Working on Fine" << endl;
 
-		int CorrFactorUse = 0;
+	cout << "Working on Fine" << endl;
 
-		/*
-		   TH1D* hPtMCFine = new TH1D("hPtMCFine","",46,5,50);
-		   TH1D* hPtGenWeightedFine = new TH1D("hPtGenWeightedFine","",46,5,50);
-		   TH1D* hPtMCrecoonlyFine  = new TH1D("hPtMCrecoonlyFine","",46,5,50);
-		   TH1D* hPtGenFine  = new TH1D("hPtGenFine","",46,5,50);
-		   TH1D* hPtGenAccFine  = new TH1D("hPtGenAccFine","",46,5,50);
-		   TH1D* hPtGenAccWeightedFine  = new TH1D("hPtGenAccWeightedFine","",46,5,50);
-		   */
+	int CorrFactorUse = 0;
 
-		TH1D* hPtMCFine;
-		TH1D* hPtGenWeightedFine;
-		TH1D* hPtMCrecoonlyFine;
-		TH1D* hPtGenFine;
-		TH1D* hPtGenAccFine;
-		TH1D* hPtGenAccWeightedFine;
-		int NFineBins;
 
+	TH1D* hPtMCFine;
+	TH1D* hPtGenWeightedFine;
+	TH1D* hPtMCrecoonlyFine;
+	TH1D* hPtGenFine;
+	TH1D* hPtGenAccFine;
+	TH1D* hPtGenAccWeightedFine;
+	int NFineBins;
 
-		TH1D* hCentMCFine  = new TH1D("hCentMCFine","",200,0,200);
-		TH1D* hCentGenWeightedFine = new TH1D("hCentGenWeightedFine","",200,0,200);
 
-		ntMC->Project("hCentMCFine","hiBin", 	(TCut(muid1) * TCut(trk1) * TCut(trg1) * TCut(muid2) * TCut(trk2) * TCut(trg2)) *
- TCut(weighpthat)*TCut(weightBgenpt)*TCut(weightHiBin)*TCut(weightPVz)*(TCut(cut.Data())&&"(Bpt < 50 && Bpt > 5)"&&"(Bgen==23333)"));
-		ntGen->Project("hCentGenWeightedFine","hiBin",TCut(weighpthat)*TCut(weightGpt)*TCut(weightHiBin)*TCut(weightPVz)*(TCut(selmcgen.Data())&&"(Gpt < 50 && Gpt > 5)"));
+	TH1D* hCentMCFine  = new TH1D("hCentMCFine","",200,0,200);
+	TH1D* hCentGenWeightedFine = new TH1D("hCentGenWeightedFine","",200,0,200);
 
+	ntMC->Project("hCentMCFine","hiBin", 	(TCut(muid1) * TCut(trk1) * TCut(trg1) * TCut(muid2) * TCut(trk2) * TCut(trg2)) *
+			TCut(weighpthat)*TCut(weightBgenpt)*TCut(weightHiBin)*TCut(weightPVz)*(TCut(cut.Data())&&"(Bpt < 50 && Bpt > 5)"&&"(Bgen==23333)"));
+	ntGen->Project("hCentGenWeightedFine","hiBin",TCut(weighpthat)*TCut(weightGpt)*TCut(weightHiBin)*TCut(weightPVz)*(TCut(selmcgen.Data())&&"(Gpt < 50 && Gpt > 5)"));
 
-		TH1D * hCentEffInv = (TH1D *) hCentGenWeightedFine->Clone("hCentEffInv");
-		hCentEffInv->Sumw2();
-		hCentGenWeightedFine->Sumw2();
 
-		hCentEffInv->Divide(hCentMCFine);
+	TH1D * hCentEffInv = (TH1D *) hCentGenWeightedFine->Clone("hCentEffInv");
+	hCentEffInv->Sumw2();
+	hCentGenWeightedFine->Sumw2();
 
+	hCentEffInv->Divide(hCentMCFine);
 
 
-		const int yBinN = 5;
-		double yBinning[yBinN+1] = {0.0,0.5, 1.0, 1.5,2.0, 2.4};
 
+	const int yBinN = 5;
+	double yBinning[yBinN+1] = {0.0,0.5, 1.0, 1.5,2.0, 2.4};
+	int Rebin = 0;
 
-		//		const int yBinN = 1;
-		//		double yBinning[yBinN+1] = {0.0, 2.4};
-		int Rebin = 0;
+	double LowBinWidth;
 
-		double LowBinWidth;
+	if(Rebin == 0)	LowBinWidth	= 0.5;
+	if(Rebin == 1)	LowBinWidth	= 1.0;
 
-		if(Rebin == 0)	LowBinWidth	= 0.5;
-		if(Rebin == 1)	LowBinWidth	= 1.0;
+	int NLowBin = 5/LowBinWidth;
+	//	int NLowBin = 5;
 
-		int NLowBin = 5/LowBinWidth;
-		//	int NLowBin = 5;
+	double MidBinWidth = 1;
+	int NMidBin = 10/MidBinWidth;
+	double HighBinWidth = 1;
+	int NHighBin = 30/HighBinWidth;
+	const int BptBin = NHighBin + NMidBin + NLowBin;
+	double BptBinning[BptBin + 1];
 
-		double MidBinWidth = 1;
-		int NMidBin = 10/MidBinWidth;
-		double HighBinWidth = 1;
-		int NHighBin = 30/HighBinWidth;
-		const int BptBin = NHighBin + NMidBin + NLowBin;
-		double BptBinning[BptBin + 1];
 
+	cout << "NLowBin = " << NLowBin << " NMidBin = " << NMidBin << " NHighBin = " << NHighBin << endl;
 
-		cout << "NLowBin = " << NLowBin << " NMidBin = " << NMidBin << " NHighBin = " << NHighBin << endl;
-
-		for(int i = 0; i < NLowBin; i++){
-			BptBinning[i] = 5 + i * LowBinWidth;
-		}
-		for(int i = 0; i < NMidBin; i++){
-			BptBinning[i+NLowBin] = 10 + i * MidBinWidth;
-		}
-		for(int i = 0; i <  NHighBin+1; i++){
-			BptBinning[i+NLowBin+NMidBin] = 20 + i * HighBinWidth;
-		}
-
-
-
-		int donewbinning = 1;
-		if(donewbinning ==0){
-			if(centmin == 0 && centmax == 90){
-				NFineBins = 200;
-
-				hPtMCFine = new TH1D("hPtMCFine","",NFineBins,5,50);
-				hPtGenWeightedFine = new TH1D("hPtGenWeightedFine","",NFineBins,5,50);
-				hPtMCrecoonlyFine  = new TH1D("hPtMCrecoonlyFine","",NFineBins,5,50);
-				hPtGenFine  = new TH1D("hPtGenFine","",NFineBins,5,50);
-				hPtGenAccFine  = new TH1D("hPtGenAccFine","",NFineBins,5,50);
-				hPtGenAccWeightedFine  = new TH1D("hPtGenAccWeightedFine","",NFineBins,5,50);
-
-			}
-			else{
-				NFineBins = 90;
-
-				hPtMCFine = new TH1D("hPtMCFine","",NFineBins,5,50);
-				hPtGenWeightedFine = new TH1D("hPtGenWeightedFine","",NFineBins,5,50);
-				hPtMCrecoonlyFine  = new TH1D("hPtMCrecoonlyFine","",NFineBins,5,50);
-				hPtGenFine  = new TH1D("hPtGenFine","",NFineBins,5,50);
-				hPtGenAccFine  = new TH1D("hPtGenAccFine","",NFineBins,5,50);
-				hPtGenAccWeightedFine  = new TH1D("hPtGenAccWeightedFine","",NFineBins,5,50);
-
-			}
-		}
-
-
-		if(donewbinning == 1){
-			hPtMCFine = new TH1D("hPtMCFine","",BptBin,BptBinning);
-			hPtGenWeightedFine = new TH1D("hPtGenWeightedFine","",BptBin,BptBinning);
-			hPtMCrecoonlyFine  = new TH1D("hPtMCrecoonlyFine","",BptBin,BptBinning);
-			hPtGenFine  = new TH1D("hPtGenFine","",BptBin,BptBinning);
-			hPtGenAccFine  = new TH1D("hPtGenAccFine","",BptBin,BptBinning);
-			hPtGenAccWeightedFine  = new TH1D("hPtGenAccWeightedFine","",BptBin,BptBinning);
-		}
-
-
-
-
-		TH1D * hPtMCFineNW = new TH1D("hPtMCFineNW","",BptBin,BptBinning);
-		TH1D * hPtGenWeightedFineNW = new TH1D("hPtGenWeightedFineNW","",BptBin,BptBinning);
-
-
-
-		ntMC->Project("hPtMCFineNW",varExp.Data(), (TCut(cut.Data())&&"(Bgen==23333)"));
-		ntGen->Project("hPtGenWeightedFineNW",varGenExp.Data(),(TCut(selmcgen.Data())));
-
-		
-		cout << "RECO = " << hPtMCFineNW->Integral() << "    GEN =  " << hPtGenWeightedFineNW->Integral() << endl;
-
-
-
-		divideBinWidth(hPtMCFine);
-		divideBinWidth(hPtMCrecoonlyFine);
-		divideBinWidth(hPtGenFine);
-		divideBinWidth(hPtGenWeightedFine);
-		divideBinWidth(hPtGenAccFine);
-		divideBinWidth(hPtGenAccWeightedFine);
-
-		ntMC->Project("hPtMCFine",varExp.Data(), 	(TCut(muid1) * TCut(trk1) * TCut(trg1) * TCut(muid2) * TCut(trk2) * TCut(trg2)) *
- TCut(weighpthat)*TCut(weightBgenpt)*TCut(weightHiBin)*TCut(weightPVz)*(TCut(cut.Data())&&"(Bgen==23333)"));
-		ntGen->Project("hPtGenWeightedFine",varGenExp.Data(),TCut(weighpthat)*TCut(weightGpt)*TCut(weightHiBin)*TCut(weightPVz)*(TCut(selmcgen.Data())));
-
-
-		cout << "selmcgen = " << selmcgen.Data() << endl;
-		cout << "Total  hPtMCFine = " << hPtMCFine->Integral() << endl;
-		cout << "Total  hPtGenWeightedFine = " << hPtGenWeightedFine->Integral() << endl;
-
-		ntGen->Project("hPtGenFine",varGenExp.Data(), TCut(weighpthat)*TCut(weightGpt)*(TCut(selmcgen.Data())));
-		ntGen->Project("hPtGenWeightedFine",varGenExp.Data(),TCut(weighpthat)*TCut(weightGpt)*TCut(weightHiBin)*TCut(weightPVz)*(TCut(selmcgen.Data())));
-		ntGen->Project("hPtGenAccFine",varGenExp.Data(),	TCut(weighpthat)*TCut(weightGpt)*(TCut(selmcgenacceptance.Data())));
-		ntGen->Project("hPtGenAccWeightedFine",varGenExp.Data(),TCut(weighpthat)*TCut(weightGpt)*TCut(weightHiBin)*TCut(weightPVz)*(TCut(selmcgenacceptance.Data())));
-
-
-
-		TH2D * hBptCent = new TH2D("hBptCent","hBptCent",9,0,90,5,5,10);
-		ntMC->Project("hBptCent","Bpt:hiBin/2",	(TCut(muid1) * TCut(trk1) * TCut(trg1) * TCut(muid2) * TCut(trk2) * TCut(trg2)) *
- TCut(weighpthat)*TCut(weightBgenpt)*TCut(weightHiBin)*TCut(weightPVz)*(TCut(cut.Data())&&"(Bgen==23333)"));
-
-
-
-		hPtMCFine->Sumw2();
-		hPtMCrecoonlyFine->Sumw2();
-		hPtGenFine->Sumw2();
-		hPtGenAccFine->Sumw2();	gStyle->SetPadRightMargin(cRightMargin);
-		hPtGenAccWeightedFine->Sumw2();
-		//Acceptance
-		TH1D* hEffAccFine = (TH1D*)hPtGenAccFine->Clone("hEffAccFine");
-		hEffAccFine->Sumw2();
-		hEffAccFine->Divide(hEffAccFine,hPtGenFine,1,1,"b");
-
-
-
-
-		TH1D* hEffFineInv = (TH1D * ) hPtGenWeightedFine->Clone("hEffFineInv");
-		hEffFineInv->Sumw2();
-		hPtMCFine->Sumw2();
-		hEffFineInv->Divide(hPtMCFine);
-
-		TH1D* hEffFine = (TH1D * ) hPtMCFine->Clone("hEffFine");
-		hEffFine->Sumw2();
-		hPtGenWeightedFine->Sumw2();
-		hEffFine->Divide(hPtGenWeightedFine);
-
-
-		//TH2D * EffBptByMC = new TH2D("EffBptByMC","EffBptByMC",45,5,50,48,-2.4,2.4);
-		//TH2D * EffBptByGen = new TH2D("EffBptByGen","EffBptByGen",45,5,50,48,-2.4,2.4);
-
-
-
-
-		TH2D * EffBptByMC; 
-		TH2D * EffBptByGen;
-
-		gStyle->SetPadRightMargin(1.5);
-		/*
-		   if( centmin == 0 && centmax == 90){
-		   EffBptByMC	= new TH2D("EffBptByMC","EffBptByMC",90,5,50,yBinN,yBinning);
-		   EffBptByGen  = new TH2D("EffBptByGen","EffBptByGen",90,5,50,yBinN,yBinning);
-		   }
-		   else{
-		   EffBptByMC = new TH2D("EffBptByMC","EffBptByMC",45,5,50,yBinN,yBinning);
-		   EffBptByGen = new TH2D("EffBptByGen","EffBptByGen",45,5,50,yBinN,yBinning);
-		   }
-
-*/
-
-		EffBptByMC	= new TH2D("EffBptByMC","EffBptByMC",BptBin,BptBinning,yBinN,yBinning);
-		EffBptByGen  = new TH2D("EffBptByGen","EffBptByGen",BptBin,BptBinning,yBinN,yBinning);
-
-
-		//Additional Codes Manually Weighting//
-	
-
-
-		TH2D * EffBptByGenZoom  = new TH2D("EffBptByGenZoom","EffBptByGenZoom",10,5,10,100,0,2.4);
-
-		ntGen->Project("EffBptByGenZoom","TMath::Abs(Gy):Gpt",TCut(weighpthat)*TCut(weightGpt)*TCut(weightHiBin)*TCut(weightPVz)*(TCut(selmcgen.Data())));
-
-
-		TH2D * EffBptByMCZoom  = new TH2D("EffBptByMCZoom","EffBptByMCZoom",10,5,10,100,0,2.4);
-
-		ntMC->Project("EffBptByMCZoom","TMath::Abs(By):Bpt", 	(TCut(muid1) * TCut(trk1) * TCut(trg1) * TCut(muid2) * TCut(trk2) * TCut(trg2)) * TCut(weighpthat)*TCut(weightBgenpt)*TCut(weightHiBin)*TCut(weightPVz)*(TCut(cut.Data()) &&"(Bgen==23333)"));
-
-
-		TH2D * EffZoom = (TH2D *) EffBptByGenZoom->Clone("EffZoom");
-		EffZoom->Sumw2();
-		EffBptByMCZoom->Sumw2();
-		EffZoom->Divide(EffBptByMCZoom);
-
-
-		cout << "EffBptByMC X Bins =  " << EffBptByMC->GetNbinsX() << endl;
-		//	TString FiducialRECO = "((Bpt > 5 && Bpt < 7 && abs(By) > 1.4 && abs(By) < 2.40 ) || (Bpt > 7 && Bpt < 10 && abs(By) > 0.90 && abs(By) < 2.40 )|| (Bpt > 10 && Bpt < 50 && abs(By) < 2.40))";
-		//	TString FiducialGEN = "((Gpt > 5 && Gpt < 7 && abs(Gy) > 1.4 && abs(Gy) < 2.40 ) || (Gpt > 7 && Gpt < 10 && abs(Gy) > 0.90 && abs(Gy) < 2.40 )|| (Gpt > 10 && Gpt < 50 && abs(Gy) < 2.40))";
-
-		cout << "RECO cut = " << cut.Data() << endl;
-		cout << "Gen cut = " << selmcgen.Data() << endl;
-
-
-		//		ntMC->Project("EffBptByMC","abs(By):Bpt", TCut(weighpthat)*TCut(weightBgenpt)*TCut(weightHiBin)*TCut(weightPVz)*(TCut(cut.Data()) && TCut(FiducialRECO.Data())&&"(Bgen==23333)"));
-		//		ntGen->Project("EffBptByGen","abs(Gy):Gpt",TCut(weighpthat)*TCut(weightGpt)*TCut(weightHiBin)*TCut(weightPVz)*(TCut(selmcgen.Data())  && TCut(FiducialGEN.Data()) ));
-
-
-	//	ntMC->Project("EffBptByMC","TMath::Abs(By):Bpt", 	(TCut(muid1) * TCut(trk1) * TCut(trg1) * TCut(muid2) * TCut(trk2) * TCut(trg2)) * TCut(weighpthat)*TCut(weightBgenpt)*TCut(weightHiBin)*TCut(weightPVz)*(TCut(cut.Data()) &&"(Bgen==23333)"));
-		ntMC->Project("EffBptByMC","TMath::Abs(By):Bpt", (TCut(muid1) * TCut(trk1) * TCut(trg1) * TCut(muid2) * TCut(trk2) * TCut(trg2)) * TCut(weighpthat)*TCut(weightBgenpt)*TCut(weightHiBin)*TCut(weightPVz)*(TCut(cut.Data()) &&"(Bgen==23333)"));
-		ntGen->Project("EffBptByGen","TMath::Abs(Gy):Gpt",TCut(weighpthat)*TCut(weightGpt)*TCut(weightHiBin)*TCut(weightPVz)*(TCut(selmcgen.Data())));
-
-
-		TString FolderName;	
-
-		if(Rebin == 0){
-			if(PbPbweight == 21 ) FolderName = "NoTnP";		
-			if(PbPbweight == 20 ) FolderName = "NoTrg";		
-			if(PbPbweight == 19 ) FolderName = "Original";		
-			if(PbPbweight == 18 ) FolderName = "NoPthat";	
-			if(PbPbweight == 17 ) FolderName = "NoWightCut";
-			if(PbPbweight == 16 ) FolderName = "NoWeight";
-			if(PbPbweight == 1) FolderName = "FONLL";
-			if(PbPbweight == 11) FolderName = "Linear";
-			if(PbPbweight == 12) FolderName = "Quadratic";
-			if(PbPbweight == 13) FolderName = "LInverse";
-			if(PbPbweight == 14) FolderName = "LSqrt";
-			if(PbPbweight == 15) FolderName = "LLog";
-		}
-
-
-
-		if(Rebin == 1){
-			if(PbPbweight == 16 ) FolderName = "Rebin/NoWeight";
-			if(PbPbweight == 1) FolderName = "Rebin/FONLL";
-			if(PbPbweight == 11) FolderName = "Rebin/Linear";
-			if(PbPbweight == 12) FolderName = "Rebin/Quadratic";
-			if(PbPbweight == 13) FolderName = "Rebin/LInverse";
-			if(PbPbweight == 14) FolderName = "Rebin/LSqrt";
-			if(PbPbweight == 15) FolderName = "Rebin/LLog";
-		}
-
-
-		/*
-		TFile * foutFineTEff = new TFile(Form("CheckSystNuno/%s/EffFine_%.0f_%.0fTEff.root",FolderName.Data(),centmin,centmax),"RECREATE");
-		foutFineTEff->cd();
-
-		TEfficiency * EffBptByTEff = 0;
-		EffBptByTEff = new TEfficiency(*EffBptByMC,*EffBptByGen);
-		EffBptByTEff->SetName("EffBptByTEff");
-		EffBptByTEff->SetDirectory(gDirectory);
-		foutFineTEff->Write();
-		foutFineTEff->Close();
-		*/
-
-
-		TH2D * EffBptByGenAccWeightedFine  = new TH2D("EffBptByGenAccWeightedFine","EffBptByGenAccWeightedFine",BptBin,BptBinning,yBinN,yBinning);
-
-
-		ntGen->Project("EffBptByGenAccWeightedFine","TMath::Abs(Gy):Gpt",TCut(weighpthat)*TCut(weightGpt)*TCut(weightHiBin)*TCut(weightPVz)*(TCut(selmcgenacceptance.Data())));
-
-
-		TH2D * hPtGenAcc2DFine  = new TH2D("hPtGenAcc2DFine","hPtGenAcc2DFine",BptBin,BptBinning,yBinN,yBinning);
-		//	ntGen->Project("hPtGenAcc2DFine","TMath::Abs(Gy):Gpt",TCut(weighpthat)*TCut(weightGpt)*(TCut(selmcgenacceptance.Data())));
-		ntGen->Project("hPtGenAcc2DFine","TMath::Abs(Gy):Gpt",TCut(weighpthat)*TCut(weightGpt)*TCut(weightHiBin)*TCut(weightPVz)*(TCut(selmcgenacceptance.Data())));
-
-		TH2D * hPtGen2DFine  = new TH2D("hPtGen2DFine","hPtGen2DFine",BptBin,BptBinning,yBinN,yBinning);
-		//	ntGen->Project("hPtGen2DFine","TMath::Abs(Gy):Gpt",TCut(weighpthat)*TCut(weightGpt)*(TCut(selmcgen.Data())));
-		ntGen->Project("hPtGen2DFine","TMath::Abs(Gy):Gpt",TCut(weighpthat)*TCut(weightGpt)*TCut(weightHiBin)*TCut(weightPVz)*(TCut(selmcgen.Data())));
-
-		TH2D * hPtAccInv2DFine = (TH2D * ) hPtGen2DFine->Clone("hPtAccInv2DFine");
-		hPtAccInv2DFine->Sumw2();
-		hPtGenAcc2DFine->Sumw2();
-		hPtAccInv2DFine->Divide(hPtGenAcc2DFine);
-
-		TH2D* hEffSelectionFine = (TH2D*) EffBptByGenAccWeightedFine->Clone("hEffSelectionFine");
-		hEffSelectionFine->Sumw2();
-		hEffSelectionFine->Divide(hEffSelectionFine,EffBptByMC,1,1,"b");
-
-		TH2D * hInv2ShotHere = (TH2D *) hPtAccInv2DFine->Clone("hInv2ShotHere");
-		hInv2ShotHere->Sumw2();
-		hEffSelectionFine->Sumw2();
-		hInv2ShotHere->Multiply(hEffSelectionFine);
-
-		TString FinAccName;
-
-		if(Rebin == 0) FinAccName = "AccNew.root";
-		if(Rebin == 1) FinAccName = "AccNewRebin.root";
-
-
-		TFile * finAccNew = new TFile(FinAccName.Data());
-		finAccNew->cd();
-
-		TH2D * hEffAcc2DFine = (TH2D *) finAccNew->Get("hEffAcc2DFine");
-		TH2D* hEff2DInv2Shots = (TH2D*)hEffSelectionFine->Clone("hEff2DInv2Shots");
-		hEff2DInv2Shots->Sumw2();
-		hEffAcc2DFine->Sumw2();
-		hEff2DInv2Shots->Multiply(hEffAcc2DFine);
-
-
-
-		if(CorrFactorUse == 1){
-			TFile * finCorrFact = new TFile("CorrFactorHis.root");
-			finCorrFact->cd();
-			TH2D * CorrFactorRatio1 = (TH2D *) finCorrFact->Get("CorrFactorRatio1");
-
-			EffBptByGen->Sumw2();
-			CorrFactorRatio1->Sumw2();
-			EffBptByGen->Multiply(CorrFactorRatio1);
-		}
-
-		TH2D *  EffBptByMCBDTWeighted	= new TH2D("EffBptByMCBDTWeighted","EffBptByMCBDTWeighted",BptBin,BptBinning,yBinN,yBinning);
-		TH2D * 	EffBptByGenBDTWeighted  = new TH2D("EffBptByGenBDTWeighted","EffBptByGenBDTWeighted",BptBin,BptBinning,yBinN,yBinning);
-
-
-		ntMC->Project("EffBptByMCBDTWeighted","TMath::Abs(By):Bpt", (TCut(muid1) * TCut(trk1) * TCut(trg1) * TCut(muid2) * TCut(trk2) * TCut(trg2)) *  TCut(BEffInvBDTWeighted)*TCut(weighpthat)*TCut(weightBgenpt)*TCut(weightHiBin)*TCut(weightPVz)*(TCut(cut.Data()) &&"(Bgen==23333)"));
-		ntGen->Project("EffBptByGenBDTWeighted","TMath::Abs(Gy):Gpt",TCut(weighpthat)*TCut(weightGpt)*TCut(weightHiBin)*TCut(weightPVz)*(TCut(selmcgen.Data())));
-
-
-
-		TH2D * EffBptByMChyperfine = new TH2D("EffBptByMChyperfine","EffBptByMChyperfine",500,5,50,200,0,2.4); 
-		TH2D * EffBptByGenhyperfine = new TH2D("EffBptByGenhyperfine","EffBptByGenhyperfine",500,5,50,200,0,2.4);;
-
-		ntMC->Project("EffBptByMChyperfine","TMath::Abs(By):Bpt", (TCut(muid1) * TCut(trk1) * TCut(trg1) * TCut(muid2) * TCut(trk2) * TCut(trg2)) *  TCut(weighpthat)*TCut(weightBgenpt)*TCut(weightHiBin)*TCut(weightPVz)*(TCut(cut.Data())&&"(Bgen==23333)"));
-		ntGen->Project("EffBptByGenhyperfine","TMath::Abs(Gy):Gpt",TCut(weighpthat)*TCut(weightGpt)*TCut(weightHiBin)*TCut(weightPVz)*(TCut(selmcgen.Data())));
-
-
-
-
-		TH2D * EffBptBy = (TH2D *) EffBptByMC->Clone("EffBptBy");
-		EffBptByMC->Sumw2();
-		EffBptByGen->Sumw2();
-		EffBptBy->Divide(EffBptByGen);
-
-		EffBptBy->GetXaxis()->SetTitle("B_{s} p_{T} (GeV/c)");
-		EffBptBy->GetYaxis()->SetTitle("B_{s} y");
-		EffBptBy->GetYaxis()->SetTitleOffset(1.5);
-
-
-		EffBptBy->GetXaxis()->CenterTitle();
-		EffBptBy->GetYaxis()->CenterTitle();
-
-
-
-
-
-		TH2D * EffBptByInv = (TH2D *) EffBptByGen->Clone("EffBptByInv");
-
-		EffBptByInv->Sumw2();
-		EffBptByMC->Sumw2();
-		EffBptByInv->Divide(EffBptByMC);
-
-		EffBptByInv->GetXaxis()->SetTitle("B_{s} p_{T} (GeV/c)");
-		EffBptByInv->GetYaxis()->SetTitle("B_{s} y");
-		EffBptByInv->GetYaxis()->SetTitleOffset(1.5);
-
-
-		EffBptByInv->GetXaxis()->CenterTitle();
-		EffBptByInv->GetYaxis()->CenterTitle();
-
-
-
-		TH2D * EffBptByInvBDTWeighted = (TH2D *) EffBptByGenBDTWeighted->Clone("EffBptByInvBDTWeighted");
-
-		EffBptByInvBDTWeighted->Sumw2();
-		EffBptByMCBDTWeighted->Sumw2();
-		EffBptByInvBDTWeighted->Divide(EffBptByMCBDTWeighted);
-
-		EffBptByInvBDTWeighted->GetXaxis()->SetTitle("B_{s} p_{T} (GeV/c)");
-		EffBptByInvBDTWeighted->GetYaxis()->SetTitle("B_{s} y");
-		EffBptByInvBDTWeighted->GetYaxis()->SetTitleOffset(1.5);
-
-
-		EffBptByInvBDTWeighted->GetXaxis()->CenterTitle();
-		EffBptByInvBDTWeighted->GetYaxis()->CenterTitle();
-
-
-
-
-		TH2D * EffBptByInvhyperfine = (TH2D *) EffBptByGenhyperfine->Clone("EffBptByInvhyperfine");
-
-		EffBptByInvhyperfine->Sumw2();
-		EffBptByMChyperfine->Sumw2();
-		EffBptByInvhyperfine->Divide(EffBptByMChyperfine);
-
-		EffBptByInvhyperfine->GetXaxis()->SetTitle("|By| (hyperfine)");
-		EffBptByInvhyperfine->GetYaxis()->SetTitle("Bp_{T} (hyperfine)");
-		EffBptByInvhyperfine->GetYaxis()->SetTitleOffset(1.5);
-
-		EffBptByInvhyperfine->GetXaxis()->CenterTitle();
-		EffBptByInvhyperfine->GetYaxis()->CenterTitle();
-
-
-
-
-		double EffRatioErr;
-
-		TH2D * EffBptByInvErr = (TH2D *) EffBptByInv->Clone("EffBptByInvErr");
-		EffBptByInvErr->Reset();
-		EffBptByInvErr->GetZaxis()->SetTitle("1/eff Error ");
-
-		for(int k = 0; k < EffBptByInv->GetNbinsX();k++){
-
-			for(int l = 0; l < EffBptByInv->GetNbinsY();l++){
-
-				EffRatioErr = EffBptByInv->GetBinError(k+1,l+1);
-
-				EffBptByInvErr->SetBinContent(k+1,l+1,EffRatioErr);
-			}
-		}
-
-
-
-		TH2D * EffBptByInvErrFrac = (TH2D *) EffBptByInvErr->Clone("EffBptByInvErrFrac");
-		EffBptByInvErrFrac->Divide(EffBptByInv);
-		EffBptByInvErrFrac->GetZaxis()->SetTitle("1/eff Fractional Error ");
-
-
-
-
-
-
-		TCanvas * c2 = new TCanvas("c2","c2",600,600);
-		c2->cd();
-		EffBptBy->Draw("COLZ");
-		c2->SaveAs(Form("ByBpt_%.0f_%.0f.png",centmin,centmax));
-
-
-		EffBptByInvErrFrac->Draw("COLZ");
-		c2->SaveAs(Form("ByBptInvErrFrac_%.0f_%.0f.png",centmin,centmax));
-
-
-		c2->SetLogz();
-
-
-		EffBptByInvErr->Draw("COLZ");
-		c2->SaveAs(Form("ByBptInvErr_%.0f_%.0f.png",centmin,centmax));
-
-
-
-
-
-
-		EffBptByInv->Draw("COLZ");
-		c2->SaveAs(Form("ByBptInv_%.0f_%.0f.png",centmin,centmax));
-
-
-
-
-
-
-		EffBptByInvhyperfine->Draw("COLZ");
-		c2->SaveAs(Form("ByBptInvhyperfine_%.0f_%.0f.png",centmin,centmax));
-
-		TFile * foutFine = new TFile(Form("CheckSystNuno/%s/EffFine_%.0f_%.0f.root",FolderName.Data(),centmin,centmax),"RECREATE");
-		foutFine->cd();
-		hPtMCFine->Write();
-		hPtGenWeightedFine->Write();
-		hEffFine->Write();
-		hEffAccFine->Write();
-		hEffFineInv->Write();
-		EffBptByGen->Write();
-		EffBptByMC->Write();
-		EffBptBy->Write();
-		EffBptByInv->Write();
-		EffBptByInvErr->Write();
-		EffBptByInvErrFrac->Write();
-		EffBptByInvhyperfine->Write();
-		hBptCent->Write();
-		hCentEffInv->Write();
-		EffBptByGenZoom->Write();
-		EffBptByMCZoom->Write();
-		EffZoom->Write();
-		EffBptByInvBDTWeighted->Write();
-		hEffSelectionFine->Write();
-		hEff2DInv2Shots->Write();
-
-
-
-		TH2D * CompRatio = (TH2D *) EffBptByInv->Clone("CompRatio");
-		CompRatio->Sumw2();
-		EffBptByInvBDTWeighted->Sumw2();
-		CompRatio->Divide(hEff2DInv2Shots);
-		CompRatio->Write();
-
-		hInv2ShotHere->Write();
-
-		TH2D * CompHere2Shots = (TH2D *) hInv2ShotHere->Clone("CompHere2Shots");
-		CompHere2Shots->Sumw2();
-		EffBptByInv->Sumw2();
-		CompHere2Shots->Divide(EffBptByInv);
-		CompHere2Shots->Write();
-		hPtGen2DFine->Write();
-
-		hPtAccInv2DFine->Write();
-		hPtGenAcc2DFine->Write();
-		foutFine->Close();
-
+	for(int i = 0; i < NLowBin; i++){
+		BptBinning[i] = 5 + i * LowBinWidth;
+	}
+	for(int i = 0; i < NMidBin; i++){
+		BptBinning[i+NLowBin] = 10 + i * MidBinWidth;
+	}
+	for(int i = 0; i <  NHighBin+1; i++){
+		BptBinning[i+NLowBin+NMidBin] = 20 + i * HighBinWidth;
 	}
 
 
-	////// tag & probe scaling factor
-	for(int i = 0; i < _nBins; i++){printf("before muon sf: %.2f, ", hPtMC->GetBinContent(i+1));}printf("\n");//check entries
-	for(int i = 0; i < _nBins; i++){
-		if(label == "pp")
-			hPtMC->SetBinContent(i+1, hPtMC->GetBinContent(i+1)*_sf_pp[i]);
-		hPtMCrecoonly->SetBinContent(i+1, hPtMCrecoonly->GetBinContent(i+1)*_sf_pp[i]);
-		if(label == "PbPb"){
-			hPtMC->SetBinContent(i+1, hPtMC->GetBinContent(i+1)*_sf_pbpb[i]);
-			hPtMCrecoonly->SetBinContent(i+1, hPtMCrecoonly->GetBinContent(i+1)*_sf_pbpb[i]);
+
+	int donewbinning = 1;
+	if(donewbinning ==0){
+		if(centmin == 0 && centmax == 90){
+			NFineBins = 200;
+
+			hPtMCFine = new TH1D("hPtMCFine","",NFineBins,5,50);
+			hPtGenWeightedFine = new TH1D("hPtGenWeightedFine","",NFineBins,5,50);
+			hPtMCrecoonlyFine  = new TH1D("hPtMCrecoonlyFine","",NFineBins,5,50);
+			hPtGenFine  = new TH1D("hPtGenFine","",NFineBins,5,50);
+			hPtGenAccFine  = new TH1D("hPtGenAccFine","",NFineBins,5,50);
+			hPtGenAccWeightedFine  = new TH1D("hPtGenAccWeightedFine","",NFineBins,5,50);
+
+		}
+		else{
+			NFineBins = 90;
+
+			hPtMCFine = new TH1D("hPtMCFine","",NFineBins,5,50);
+			hPtGenWeightedFine = new TH1D("hPtGenWeightedFine","",NFineBins,5,50);
+			hPtMCrecoonlyFine  = new TH1D("hPtMCrecoonlyFine","",NFineBins,5,50);
+			hPtGenFine  = new TH1D("hPtGenFine","",NFineBins,5,50);
+			hPtGenAccFine  = new TH1D("hPtGenAccFine","",NFineBins,5,50);
+			hPtGenAccWeightedFine  = new TH1D("hPtGenAccWeightedFine","",NFineBins,5,50);
+
 		}
 	}
-	for(int i = 0; i < _nBins; i++){printf("after muon sf: %.2f, ", hPtMC->GetBinContent(i+1));}printf("\n");//check entries
-	////// tag & probe scaling factor
 
-	divideBinWidth(hPtMC);
-	divideBinWidth(hPtMCrecoonly);
-	divideBinWidth(hPtGen);
-	divideBinWidth(hPtGenWeighted);
-	divideBinWidth(hPtGenAcc);
-	divideBinWidth(hPtGenAccWeighted);
 
-	hPtMC->Sumw2();
-	hPtMCrecoonly->Sumw2();
-	hPtGen->Sumw2();
-	hPtGenAcc->Sumw2();
-	hPtGenAccWeighted->Sumw2();
+	if(donewbinning == 1){
+		hPtMCFine = new TH1D("hPtMCFine","",BptBin,BptBinning);
+		hPtGenWeightedFine = new TH1D("hPtGenWeightedFine","",BptBin,BptBinning);
+		hPtMCrecoonlyFine  = new TH1D("hPtMCrecoonlyFine","",BptBin,BptBinning);
+		hPtGenFine  = new TH1D("hPtGenFine","",BptBin,BptBinning);
+		hPtGenAccFine  = new TH1D("hPtGenAccFine","",BptBin,BptBinning);
+		hPtGenAccWeightedFine  = new TH1D("hPtGenAccWeightedFine","",BptBin,BptBinning);
+	}
+
+
+
+
+	TH1D * hPtMCFineNW = new TH1D("hPtMCFineNW","",BptBin,BptBinning);
+	TH1D * hPtGenWeightedFineNW = new TH1D("hPtGenWeightedFineNW","",BptBin,BptBinning);
+
+
+
+	ntMC->Project("hPtMCFineNW",varExp.Data(), (TCut(cut.Data())&&"(Bgen==23333)"));
+	ntGen->Project("hPtGenWeightedFineNW",varGenExp.Data(),(TCut(selmcgen.Data())));
+
+
+	cout << "RECO = " << hPtMCFineNW->Integral() << "    GEN =  " << hPtGenWeightedFineNW->Integral() << endl;
+
+
+
+	divideBinWidth(hPtMCFine);
+	divideBinWidth(hPtMCrecoonlyFine);
+	divideBinWidth(hPtGenFine);
+	divideBinWidth(hPtGenWeightedFine);
+	divideBinWidth(hPtGenAccFine);
+	divideBinWidth(hPtGenAccWeightedFine);
+
+	ntMC->Project("hPtMCFine",varExp.Data(), 	(TCut(muid1) * TCut(trk1) * TCut(trg1) * TCut(muid2) * TCut(trk2) * TCut(trg2)) *
+			TCut(weighpthat)*TCut(weightBgenpt)*TCut(weightHiBin)*TCut(weightPVz)*(TCut(cut.Data())&&"(Bgen==23333)"));
+	ntGen->Project("hPtGenWeightedFine",varGenExp.Data(),TCut(weighpthat)*TCut(weightGpt)*TCut(weightHiBin)*TCut(weightPVz)*(TCut(selmcgen.Data())));
+
+
+	cout << "selmcgen = " << selmcgen.Data() << endl;
+	cout << "Total  hPtMCFine = " << hPtMCFine->Integral() << endl;
+	cout << "Total  hPtGenWeightedFine = " << hPtGenWeightedFine->Integral() << endl;
+
+	ntGen->Project("hPtGenFine",varGenExp.Data(), TCut(weighpthat)*TCut(weightGpt)*(TCut(selmcgen.Data())));
+	ntGen->Project("hPtGenWeightedFine",varGenExp.Data(),TCut(weighpthat)*TCut(weightGpt)*TCut(weightHiBin)*TCut(weightPVz)*(TCut(selmcgen.Data())));
+	ntGen->Project("hPtGenAccFine",varGenExp.Data(),	TCut(weighpthat)*TCut(weightGpt)*(TCut(selmcgenacceptance.Data())));
+	ntGen->Project("hPtGenAccWeightedFine",varGenExp.Data(),TCut(weighpthat)*TCut(weightGpt)*TCut(weightHiBin)*TCut(weightPVz)*(TCut(selmcgenacceptance.Data())));
+
+
+
+	TH2D * hBptCent = new TH2D("hBptCent","hBptCent",9,0,90,5,5,10);
+	ntMC->Project("hBptCent","Bpt:hiBin/2",	(TCut(muid1) * TCut(trk1) * TCut(trg1) * TCut(muid2) * TCut(trk2) * TCut(trg2)) *
+			TCut(weighpthat)*TCut(weightBgenpt)*TCut(weightHiBin)*TCut(weightPVz)*(TCut(cut.Data())&&"(Bgen==23333)"));
+
+
+
+	hPtMCFine->Sumw2();
+	hPtMCrecoonlyFine->Sumw2();
+	hPtGenFine->Sumw2();
+	hPtGenAccFine->Sumw2();	gStyle->SetPadRightMargin(cRightMargin);
+	hPtGenAccWeightedFine->Sumw2();
 	//Acceptance
-	TH1D* hEffAcc = (TH1D*)hPtGenAcc->Clone("hEffAcc");
-	hEffAcc->Sumw2();
-	hEffAcc->Divide(hEffAcc,hPtGen,1,1,"b");
-	//Selection
-	TH1D* hEffSelection = (TH1D*)hPtMC->Clone("hEffSelection");
-	hEffSelection->Sumw2();
-	hEffSelection->Divide(hEffSelection,hPtGenAccWeighted,1,1,"b");
-	//Acc * Eff
-	TH1D* hEff = (TH1D*)hEffSelection->Clone("hEff");
-	hEff->Sumw2();
-	hEff->Multiply(hEff,hEffAcc,1,1);
-	//Acc * Eff (one shot)
-	TH1D* hEffOneShot = (TH1D*)hPtMC->Clone("hEffOneShot");
-	hEffOneShot->Sumw2();
-	hEffOneShot->Divide(hEffOneShot,hPtGenWeighted,1,1,"b");
+	TH1D* hEffAccFine = (TH1D*)hPtGenAccFine->Clone("hEffAccFine");
+	hEffAccFine->Sumw2();
+	hEffAccFine->Divide(hEffAccFine,hPtGenFine,1,1,"b");
 
-	////// Draw hEff, hEffAcc
-	TH2F* hemptyEff=new TH2F("hemptyEff","",50,_ptBins[0]-5.,_ptBins[_nBins]+5.,10.,0,0.8);  
-	if(varExp == "abs(By)") hemptyEff=new TH2F("hemptyEff","",50,_ptBins[0],_ptBins[_nBins],10.,0,0.8);  
-	hemptyEff->GetXaxis()->CenterTitle();
-	hemptyEff->GetYaxis()->CenterTitle();
-	hemptyEff->GetYaxis()->SetTitle("#alpha x #epsilon");
-	hemptyEff->GetXaxis()->SetTitle("p_{T} (GeV/c)");
-	hemptyEff->GetXaxis()->SetTitleOffset(0.9);
-	hemptyEff->GetYaxis()->SetTitleOffset(0.95);
-	hemptyEff->GetXaxis()->SetTitleSize(0.05);
-	hemptyEff->GetYaxis()->SetTitleSize(0.05);
-	hemptyEff->GetXaxis()->SetTitleFont(42);
-	hemptyEff->GetYaxis()->SetTitleFont(42);
-	hemptyEff->GetXaxis()->SetLabelFont(42);
-	hemptyEff->GetYaxis()->SetLabelFont(42);
-	hemptyEff->GetXaxis()->SetLabelSize(0.035);
-	hemptyEff->GetYaxis()->SetLabelSize(0.035);  
-	hemptyEff->SetMaximum(1.0);
-	hemptyEff->SetMinimum(0.);
-	hemptyEff->Draw();
-	TH2F* hemptyEffAcc=(TH2F*)hemptyEff->Clone("hemptyEffAcc");
-	hemptyEffAcc->SetYTitle("#alpha");
 
-	TCanvas*canvasEff=new TCanvas("canvasEff","canvasEff",1000.,500);
-	canvasEff->Divide(2,1);
-	canvasEff->cd(1);
-	hemptyEffAcc->Draw();
-	hEffAcc->Draw("same");
-	canvasEff->cd(2);
-	hemptyEff->Draw();
-	hEff->Draw("same");
 
-	for(int i = 0; i < _nBins; i++){		
-		cout << _ptBins[i] <<  "< pT < " <<  _ptBins[i+1]  <<  "    Efficiency =  " <<  hEff->GetBinContent(i+1) << "    Efficiency Error = " << hEff->GetBinError(i+1) << endl;
+
+	TH1D* hEffFineInv = (TH1D * ) hPtGenWeightedFine->Clone("hEffFineInv");
+	hEffFineInv->Sumw2();
+	hPtMCFine->Sumw2();
+	hEffFineInv->Divide(hPtMCFine);
+
+	TH1D* hEffFine = (TH1D * ) hPtMCFine->Clone("hEffFine");
+	hEffFine->Sumw2();
+	hPtGenWeightedFine->Sumw2();
+	hEffFine->Divide(hPtGenWeightedFine);
+
+
+
+
+	TH2D * EffBptByMC; 
+	TH2D * EffBptByGen;
+
+	gStyle->SetPadRightMargin(1.5);
+	EffBptByMC	= new TH2D("EffBptByMC","EffBptByMC",BptBin,BptBinning,yBinN,yBinning);
+	EffBptByGen  = new TH2D("EffBptByGen","EffBptByGen",BptBin,BptBinning,yBinN,yBinning);
+
+
+	//Additional Codes Manually Weighting//
+
+
+
+	TH2D * EffBptByGenZoom  = new TH2D("EffBptByGenZoom","EffBptByGenZoom",10,5,10,100,0,2.4);
+
+	ntGen->Project("EffBptByGenZoom","TMath::Abs(Gy):Gpt",TCut(weighpthat)*TCut(weightGpt)*TCut(weightHiBin)*TCut(weightPVz)*(TCut(selmcgen.Data())));
+
+
+	TH2D * EffBptByMCZoom  = new TH2D("EffBptByMCZoom","EffBptByMCZoom",10,5,10,100,0,2.4);
+
+	ntMC->Project("EffBptByMCZoom","TMath::Abs(By):Bpt", 	(TCut(muid1) * TCut(trk1) * TCut(trg1) * TCut(muid2) * TCut(trk2) * TCut(trg2)) * TCut(weighpthat)*TCut(weightBgenpt)*TCut(weightHiBin)*TCut(weightPVz)*(TCut(cut.Data()) &&"(Bgen==23333)"));
+
+
+	TH2D * EffZoom = (TH2D *) EffBptByGenZoom->Clone("EffZoom");
+	EffZoom->Sumw2();
+	EffBptByMCZoom->Sumw2();
+	EffZoom->Divide(EffBptByMCZoom);
+
+
+	ntMC->Project("EffBptByMC","TMath::Abs(By):Bpt", (TCut(muid1) * TCut(trk1) * TCut(trg1) * TCut(muid2) * TCut(trk2) * TCut(trg2)) * TCut(weighpthat)*TCut(weightBgenpt)*TCut(weightHiBin)*TCut(weightPVz)*(TCut(cut.Data()) &&"(Bgen==23333)"));
+	ntGen->Project("EffBptByGen","TMath::Abs(Gy):Gpt",TCut(weighpthat)*TCut(weightGpt)*TCut(weightHiBin)*TCut(weightPVz)*(TCut(selmcgen.Data())));
+
+
+	TString FolderName;	
+
+	if(Rebin == 0){
+		if(PbPbweight == 21 ) FolderName = "NoTnP";		
+		if(PbPbweight == 20 ) FolderName = "NoTrg";		
+		if(PbPbweight == 19 ) FolderName = "Original";		
+		if(PbPbweight == 18 ) FolderName = "NoPthat";	
+		if(PbPbweight == 17 ) FolderName = "NoWightCut";
+		if(PbPbweight == 16 ) FolderName = "NoWeight";
+		if(PbPbweight == 1) FolderName = "FONLL";
+		if(PbPbweight == 11) FolderName = "Linear";
+		if(PbPbweight == 12) FolderName = "Quadratic";
+		if(PbPbweight == 13) FolderName = "LInverse";
+		if(PbPbweight == 14) FolderName = "LSqrt";
+		if(PbPbweight == 15) FolderName = "LLog";
 	}
 
-	canvasEff->SaveAs(Form("%s/canvasEff_study%s.pdf",outplotf.Data(),Form(label.Data())));
 
-	////// Draw hPthat, hPthatweight
-	TH2F* hemptyPthat=new TH2F("hemptyPthat","",50,0.,300.,10,1e-5,1e9);  
-	hemptyPthat->GetXaxis()->CenterTitle();
-	hemptyPthat->GetYaxis()->CenterTitle();
-	hemptyPthat->GetYaxis()->SetTitle("Entries");
-	hemptyPthat->GetXaxis()->SetTitle("pthat");
-	hemptyPthat->GetXaxis()->SetTitleOffset(0.9);
-	hemptyPthat->GetYaxis()->SetTitleOffset(0.95);
-	hemptyPthat->GetXaxis()->SetTitleSize(0.05);
-	hemptyPthat->GetYaxis()->SetTitleSize(0.05);
-	hemptyPthat->GetXaxis()->SetTitleFont(42);
-	hemptyPthat->GetYaxis()->SetTitleFont(42);
-	hemptyPthat->GetXaxis()->SetLabelFont(42);
-	hemptyPthat->GetYaxis()->SetLabelFont(42);
-	hemptyPthat->GetXaxis()->SetLabelSize(0.035);
-	hemptyPthat->GetYaxis()->SetLabelSize(0.035);  
-	hemptyPthat->SetMaximum(1.0);
-	hemptyPthat->SetMinimum(0.);
-	TH2F* hemptyPthatWeighted=(TH2F*)hemptyPthat->Clone("hemptyPthatWeighted");
-	hemptyPthatWeighted->GetXaxis()->SetTitle("pthat reweighted");
 
-	TCanvas*canvasPthat=new TCanvas("canvasPthat","canvasPthat",1000.,500);
-	canvasPthat->Divide(2,1);
-	canvasPthat->cd(1);
-	gPad->SetLogy();
-	hemptyPthat->Draw("same");
-	hPthat->Draw("same");
-	canvasPthat->cd(2);
-	gPad->SetLogy();
-	hemptyPthatWeighted->Draw();
-	hPthatweight->Draw("same");
-	canvasPthat->SaveAs(Form("%s/canvasPthat_%s.pdf",outplotf.Data(),Form(label.Data())));
+	if(Rebin == 1){
+		if(PbPbweight == 16 ) FolderName = "Rebin/NoWeight";
+		if(PbPbweight == 1) FolderName = "Rebin/FONLL";
+		if(PbPbweight == 11) FolderName = "Rebin/Linear";
+		if(PbPbweight == 12) FolderName = "Rebin/Quadratic";
+		if(PbPbweight == 13) FolderName = "Rebin/LInverse";
+		if(PbPbweight == 14) FolderName = "Rebin/LSqrt";
+		if(PbPbweight == 15) FolderName = "Rebin/LLog";
+	}
 
-	////// Draw hPtMC, hPtGen
-	TH2F* hemptySpectra=new TH2F("hemptySpectra","",50,0.,130.,10,1,1e5);  
-	if(varExp=="abs(By)") hemptySpectra=new TH2F("hemptySpectra","",50,_ptBins[0],_ptBins[_nBins],10,1,1e7);  
-	hemptySpectra->GetXaxis()->CenterTitle();
-	hemptySpectra->GetYaxis()->CenterTitle();
-	hemptySpectra->GetYaxis()->SetTitle("Entries");
-	hemptySpectra->GetXaxis()->SetTitle("p_{T}");
-	hemptySpectra->GetXaxis()->SetTitleOffset(0.9);
-	hemptySpectra->GetYaxis()->SetTitleOffset(0.95);
-	hemptySpectra->GetXaxis()->SetTitleSize(0.05);
-	hemptySpectra->GetYaxis()->SetTitleSize(0.05);
-	hemptySpectra->GetXaxis()->SetTitleFont(42);
-	hemptySpectra->GetYaxis()->SetTitleFont(42);
-	hemptySpectra->GetXaxis()->SetLabelFont(42);
-	hemptySpectra->GetYaxis()->SetLabelFont(42);
-	hemptySpectra->GetXaxis()->SetLabelSize(0.035);
-	hemptySpectra->GetYaxis()->SetLabelSize(0.035);  
+	TH2D * EffBptByGenAccWeightedFine  = new TH2D("EffBptByGenAccWeightedFine","EffBptByGenAccWeightedFine",BptBin,BptBinning,yBinN,yBinning);
 
-	TCanvas*canvasSpectra=new TCanvas("canvasSpectra","canvasSpectra",1000.,500);
-	canvasSpectra->Divide(2,1);
-	canvasSpectra->cd(1);
-	gPad->SetLogy();
-	hemptySpectra->Draw();
-	hPtMC->Draw("same");
-	canvasSpectra->cd(2);
-	gPad->SetLogy();
-	hemptySpectra->Draw();
-	hPtGen->Draw("same");
-	canvasSpectra->SaveAs(Form("%s/canvasSpectra_%s.pdf",outplotf.Data(),Form(label.Data())));
 
-	//### 1D histogram
-	//hEffAcc = hPtGenAcc / hPtGen
-	//hEffSelection = hPtMC / hPtMC
-	//hEff = hEffSelection * hEffAcc
-	//hEffOneShot = hPtMC / hPtGen
+	ntGen->Project("EffBptByGenAccWeightedFine","TMath::Abs(Gy):Gpt",TCut(weighpthat)*TCut(weightGpt)*TCut(weightHiBin)*TCut(weightPVz)*(TCut(selmcgenacceptance.Data())));
 
-	TString text;
-	if (isPbPb) { text="1.5 nb^{-1} (5.02 TeV PbPb)";}
-	else {text="28.0 pb^{-1} (5.02 TeV pp)";}
-	TLatex* texlumi = new TLatex(0.9,0.92,text.Data());
-	texlumi->SetNDC();
-	texlumi->SetTextAlign(31);
-	texlumi->SetTextFont(42);
-	texlumi->SetTextSize(0.038);
-	texlumi->SetLineWidth(2);
 
-	TString texper="%";
-	TLatex* texCent = new TLatex(0.5,0.815,Form("Centrality %.0f - %.0f%s",centMin,centMax,texper.Data()));
-	texCent->SetNDC();
-	texCent->SetTextFont(42);
-	texCent->SetTextSize(0.05);
+	TH2D * hPtGenAcc2DFine  = new TH2D("hPtGenAcc2DFine","hPtGenAcc2DFine",BptBin,BptBinning,yBinN,yBinning);
+	ntGen->Project("hPtGenAcc2DFine","TMath::Abs(Gy):Gpt",TCut(weighpthat)*TCut(weightGpt)*TCut(weightHiBin)*TCut(weightPVz)*(TCut(selmcgenacceptance.Data())));
 
-	TLatex* texY = new TLatex(0.5,0.750,"|y| < 2.4");
-	texY->SetNDC();
-	texY->SetTextFont(42);
-	texY->SetTextSize(0.05);
-	texY->SetLineWidth(2);
+	TH2D * hPtGen2DFine  = new TH2D("hPtGen2DFine","hPtGen2DFine",BptBin,BptBinning,yBinN,yBinning);
+	ntGen->Project("hPtGen2DFine","TMath::Abs(Gy):Gpt",TCut(weighpthat)*TCut(weightGpt)*TCut(weightHiBin)*TCut(weightPVz)*(TCut(selmcgen.Data())));
 
-	TLatex* texCms = new TLatex(0.08,0.95, "CMS Preliminary");
-	texCms->SetNDC();
-	texCms->SetTextAlign(13);
-	texCms->SetTextSize(0.038);
-	texCms->SetTextFont(62);
+	TH2D * hPtAccInv2DFine = (TH2D * ) hPtGen2DFine->Clone("hPtAccInv2DFine");
+	hPtAccInv2DFine->Sumw2();
+	hPtGenAcc2DFine->Sumw2();
+	hPtAccInv2DFine->Divide(hPtGenAcc2DFine);
 
-	TCanvas*canvas1D=new TCanvas("canvas1D","",600,600);
-	canvas1D->cd();
-	gPad->SetLogy(1);
-	hemptyEff->GetXaxis()->SetTitle("p_{T} GeV^{-1}c)");
-	hEff->SetLineColor(2);
-	hEff->SetMarkerColor(2);
+	TH2D* hEffSelectionFine = (TH2D*) EffBptByGenAccWeightedFine->Clone("hEffSelectionFine");
+	hEffSelectionFine->Sumw2();
+	hEffSelectionFine->Divide(hEffSelectionFine,EffBptByMC,1,1,"b");
 
-	hemptySpectra->SetYTitle("Entries of hPtMC");
-	hemptySpectra->Draw(); 
-	hPtMC->Draw("same");
-	if(isPbPb) texCent->Draw();
-	texY->Draw(); texCms->Draw(); texlumi->Draw();
-	canvas1D->SaveAs(Form("%s/canvas1DhPtMC_%s.pdf",outplotf.Data(),Form(label.Data())));
-	canvas1D->Clear();
+	TH2D * hInv2ShotHere = (TH2D *) hPtAccInv2DFine->Clone("hInv2ShotHere");
+	hInv2ShotHere->Sumw2();
+	hEffSelectionFine->Sumw2();
+	hInv2ShotHere->Multiply(hEffSelectionFine);
 
-	hemptySpectra->SetYTitle("Entries of hPtMCrecoonly");
-	hemptySpectra->Draw(); 
-	hPtMCrecoonly->Draw("same");
-	if(isPbPb) texCent->Draw();
-	texY->Draw(); texCms->Draw(); texlumi->Draw();
-	canvas1D->SaveAs(Form("%s/canvas1DhPtMCrecoonly_%s.pdf",outplotf.Data(),Form(label.Data())));
-	canvas1D->Clear();
+	TString FinAccName;
 
-	hemptySpectra->SetYTitle("Entries of hPtGen");
-	hemptySpectra->Draw(); 
-	hPtGen->Draw("same");
-	if(isPbPb) texCent->Draw();
-	texY->Draw(); texCms->Draw(); texlumi->Draw();
-	canvas1D->SaveAs(Form("%s/canvas1DhPtGen_%s.pdf",outplotf.Data(),Form(label.Data())));
-	canvas1D->Clear();
+	if(Rebin == 0) FinAccName = "AccNew.root";
+	if(Rebin == 1) FinAccName = "AccNewRebin.root";
 
-	hemptySpectra->SetYTitle("Entries of hPtGenAcc");
-	hemptySpectra->Draw(); 
-	hPtGenAcc->Draw("same");
-	if(isPbPb) texCent->Draw();
-	texY->Draw(); texCms->Draw(); texlumi->Draw();
-	canvas1D->SaveAs(Form("%s/canvas1DhPtGenAcc_%s.pdf",outplotf.Data(),Form(label.Data())));
-	canvas1D->Clear();
 
-	gPad->SetLogy(0);
-	//hemptyEff->SetYTitle("hPtGenAcc/hPtGen");
-	hemptyEff->SetYTitle("#alpha");
-	hemptyEff->Draw(); 
-	hEffAcc->Draw("same");
-	if(isPbPb) texCent->Draw();
-	texY->Draw(); texCms->Draw(); texlumi->Draw();
-	canvas1D->SaveAs(Form("%s/canvas1DhEffAcc_%s.pdf",outplotf.Data(),Form(label.Data())));
-	canvas1D->Clear();
+	TFile * finAccNew = new TFile(FinAccName.Data());
+	finAccNew->cd();
 
-	hemptyEff->SetYTitle("#epsilon");
-	hemptyEff->Draw(); 
-	hEffSelection->Draw("same");
-	if(isPbPb) texCent->Draw();
-	texY->Draw(); texCms->Draw(); texlumi->Draw();
-	canvas1D->SaveAs(Form("%s/canvas1DhEffSelection_%s.pdf",outplotf.Data(),Form(label.Data())));
-	canvas1D->Clear();
+	TH2D * hEffAcc2DFine = (TH2D *) finAccNew->Get("hEffAcc2DFine");
+	TH2D* hEff2DInv2Shots = (TH2D*)hEffSelectionFine->Clone("hEff2DInv2Shots");
+	hEff2DInv2Shots->Sumw2();
+	hEffAcc2DFine->Sumw2();
+	hEff2DInv2Shots->Multiply(hEffAcc2DFine);
 
-	hemptyEff->SetYTitle("#alpha x #epsilon");
-	hemptyEff->Draw();
-	hEff->Draw("same");
-	if(isPbPb) texCent->Draw();
-	texY->Draw(); texCms->Draw(); texlumi->Draw();
-	canvas1D->SaveAs(Form("%s/canvas1DhEff_%s.pdf",outplotf.Data(),Form(label.Data())));
-	canvas1D->SaveAs(Form("%s/canvas1DhEff_%s.C",outplotf.Data(),Form(label.Data())));
-	canvas1D->Clear();
 
-	hemptyEff->SetYTitle("#alpha x #epsilon (1-shot)");
-	hemptyEff->Draw(); 
-	hEffOneShot->Draw("same");
-	if(isPbPb) texCent->Draw();
-	texY->Draw(); texCms->Draw(); texlumi->Draw();
-	canvas1D->SaveAs(Form("%s/canvas1DhEffOneShot_%s.pdf",outplotf.Data(),Form(label.Data())));
-	canvas1D->Clear();
 
-	TFile *fout=new TFile(outputfile.Data(),"recreate");
-	fout->cd();
-	hPtMC->Write();
-	hPtGen->Write();
-	hPtGenWeighted->Write();
-	hPtGenAcc->Write();
-	hPtGenAccWeighted->Write();
-	hEffAcc->Write();
-	hEffSelection->Write();
-	hEffOneShot->Write();
-	hEff->Write();
-	fout->Close();  
+	if(CorrFactorUse == 1){
+		TFile * finCorrFact = new TFile("CorrFactorHis.root");
+		finCorrFact->cd();
+		TH2D * CorrFactorRatio1 = (TH2D *) finCorrFact->Get("CorrFactorRatio1");
+
+		EffBptByGen->Sumw2();
+		CorrFactorRatio1->Sumw2();
+		EffBptByGen->Multiply(CorrFactorRatio1);
+	}
+
+	TH2D *  EffBptByMCBDTWeighted	= new TH2D("EffBptByMCBDTWeighted","EffBptByMCBDTWeighted",BptBin,BptBinning,yBinN,yBinning);
+	TH2D * 	EffBptByGenBDTWeighted  = new TH2D("EffBptByGenBDTWeighted","EffBptByGenBDTWeighted",BptBin,BptBinning,yBinN,yBinning);
+
+
+	ntMC->Project("EffBptByMCBDTWeighted","TMath::Abs(By):Bpt", (TCut(muid1) * TCut(trk1) * TCut(trg1) * TCut(muid2) * TCut(trk2) * TCut(trg2)) *  TCut(BEffInvBDTWeighted)*TCut(weighpthat)*TCut(weightBgenpt)*TCut(weightHiBin)*TCut(weightPVz)*(TCut(cut.Data()) &&"(Bgen==23333)"));
+	ntGen->Project("EffBptByGenBDTWeighted","TMath::Abs(Gy):Gpt",TCut(weighpthat)*TCut(weightGpt)*TCut(weightHiBin)*TCut(weightPVz)*(TCut(selmcgen.Data())));
+
+
+
+	TH2D * EffBptByMChyperfine = new TH2D("EffBptByMChyperfine","EffBptByMChyperfine",500,5,50,200,0,2.4); 
+	TH2D * EffBptByGenhyperfine = new TH2D("EffBptByGenhyperfine","EffBptByGenhyperfine",500,5,50,200,0,2.4);;
+
+	ntMC->Project("EffBptByMChyperfine","TMath::Abs(By):Bpt", (TCut(muid1) * TCut(trk1) * TCut(trg1) * TCut(muid2) * TCut(trk2) * TCut(trg2)) *  TCut(weighpthat)*TCut(weightBgenpt)*TCut(weightHiBin)*TCut(weightPVz)*(TCut(cut.Data())&&"(Bgen==23333)"));
+	ntGen->Project("EffBptByGenhyperfine","TMath::Abs(Gy):Gpt",TCut(weighpthat)*TCut(weightGpt)*TCut(weightHiBin)*TCut(weightPVz)*(TCut(selmcgen.Data())));
+
+
+
+
+	TH2D * EffBptBy = (TH2D *) EffBptByMC->Clone("EffBptBy");
+	EffBptByMC->Sumw2();
+	EffBptByGen->Sumw2();
+	EffBptBy->Divide(EffBptByGen);
+
+	EffBptBy->GetXaxis()->SetTitle("B_{s} p_{T} (GeV/c)");
+	EffBptBy->GetYaxis()->SetTitle("B_{s} y");
+	EffBptBy->GetYaxis()->SetTitleOffset(1.5);
+
+
+	EffBptBy->GetXaxis()->CenterTitle();
+	EffBptBy->GetYaxis()->CenterTitle();
+
+
+
+
+
+	TH2D * EffBptByInv = (TH2D *) EffBptByGen->Clone("EffBptByInv");
+
+	EffBptByInv->Sumw2();
+	EffBptByMC->Sumw2();
+	EffBptByInv->Divide(EffBptByMC);
+
+	EffBptByInv->GetXaxis()->SetTitle("B_{s} p_{T} (GeV/c)");
+	EffBptByInv->GetYaxis()->SetTitle("B_{s} y");
+	EffBptByInv->GetYaxis()->SetTitleOffset(1.5);
+
+
+	EffBptByInv->GetXaxis()->CenterTitle();
+	EffBptByInv->GetYaxis()->CenterTitle();
+
+
+
+	TH2D * EffBptByInvBDTWeighted = (TH2D *) EffBptByGenBDTWeighted->Clone("EffBptByInvBDTWeighted");
+
+	EffBptByInvBDTWeighted->Sumw2();
+	EffBptByMCBDTWeighted->Sumw2();
+	EffBptByInvBDTWeighted->Divide(EffBptByMCBDTWeighted);
+
+	EffBptByInvBDTWeighted->GetXaxis()->SetTitle("B_{s} p_{T} (GeV/c)");
+	EffBptByInvBDTWeighted->GetYaxis()->SetTitle("B_{s} y");
+	EffBptByInvBDTWeighted->GetYaxis()->SetTitleOffset(1.5);
+
+
+	EffBptByInvBDTWeighted->GetXaxis()->CenterTitle();
+	EffBptByInvBDTWeighted->GetYaxis()->CenterTitle();
+
+
+
+
+	TH2D * EffBptByInvhyperfine = (TH2D *) EffBptByGenhyperfine->Clone("EffBptByInvhyperfine");
+
+	EffBptByInvhyperfine->Sumw2();
+	EffBptByMChyperfine->Sumw2();
+	EffBptByInvhyperfine->Divide(EffBptByMChyperfine);
+
+	EffBptByInvhyperfine->GetXaxis()->SetTitle("|By| (hyperfine)");
+	EffBptByInvhyperfine->GetYaxis()->SetTitle("Bp_{T} (hyperfine)");
+	EffBptByInvhyperfine->GetYaxis()->SetTitleOffset(1.5);
+
+	EffBptByInvhyperfine->GetXaxis()->CenterTitle();
+	EffBptByInvhyperfine->GetYaxis()->CenterTitle();
+
+
+
+
+	double EffRatioErr;
+
+	TH2D * EffBptByInvErr = (TH2D *) EffBptByInv->Clone("EffBptByInvErr");
+	EffBptByInvErr->Reset();
+	EffBptByInvErr->GetZaxis()->SetTitle("1/eff Error ");
+
+	for(int k = 0; k < EffBptByInv->GetNbinsX();k++){
+
+		for(int l = 0; l < EffBptByInv->GetNbinsY();l++){
+
+			EffRatioErr = EffBptByInv->GetBinError(k+1,l+1);
+
+			EffBptByInvErr->SetBinContent(k+1,l+1,EffRatioErr);
+		}
+	}
+
+
+
+	TH2D * EffBptByInvErrFrac = (TH2D *) EffBptByInvErr->Clone("EffBptByInvErrFrac");
+	EffBptByInvErrFrac->Divide(EffBptByInv);
+	EffBptByInvErrFrac->GetZaxis()->SetTitle("1/eff Fractional Error ");
+
+
+
+
+
+
+	TCanvas * c2 = new TCanvas("c2","c2",600,600);
+	c2->cd();
+	EffBptBy->Draw("COLZ");
+	c2->SaveAs(Form("ByBpt_%.0f_%.0f.png",centmin,centmax));
+
+
+	EffBptByInvErrFrac->Draw("COLZ");
+	c2->SaveAs(Form("ByBptInvErrFrac_%.0f_%.0f.png",centmin,centmax));
+
+
+	c2->SetLogz();
+
+
+	EffBptByInvErr->Draw("COLZ");
+	c2->SaveAs(Form("ByBptInvErr_%.0f_%.0f.png",centmin,centmax));
+
+
+
+
+
+
+	EffBptByInv->Draw("COLZ");
+	c2->SaveAs(Form("ByBptInv_%.0f_%.0f.png",centmin,centmax));
+
+
+
+
+
+
+	EffBptByInvhyperfine->Draw("COLZ");
+	c2->SaveAs(Form("ByBptInvhyperfine_%.0f_%.0f.png",centmin,centmax));
+
+	TFile * foutFine = new TFile(Form("CheckSystNuno/%s/EffFine_%.0f_%.0f.root",FolderName.Data(),centmin,centmax),"RECREATE");
+	foutFine->cd();
+	hPtMCFine->Write();
+	hPtGenWeightedFine->Write();
+	hEffFine->Write();
+	hEffAccFine->Write();
+	hEffFineInv->Write();
+	EffBptByGen->Write();
+	EffBptByMC->Write();
+	EffBptBy->Write();
+	EffBptByInv->Write();
+	EffBptByInvErr->Write();
+	EffBptByInvErrFrac->Write();
+	EffBptByInvhyperfine->Write();
+	hBptCent->Write();
+	hCentEffInv->Write();
+	EffBptByGenZoom->Write();
+	EffBptByMCZoom->Write();
+	EffZoom->Write();
+	EffBptByInvBDTWeighted->Write();
+	hEffSelectionFine->Write();
+	hEff2DInv2Shots->Write();
+
+
+
+	TH2D * CompRatio = (TH2D *) EffBptByInv->Clone("CompRatio");
+	CompRatio->Sumw2();
+	EffBptByInvBDTWeighted->Sumw2();
+	CompRatio->Divide(hEff2DInv2Shots);
+	CompRatio->Write();
+
+	hInv2ShotHere->Write();
+
+	TH2D * CompHere2Shots = (TH2D *) hInv2ShotHere->Clone("CompHere2Shots");
+	CompHere2Shots->Sumw2();
+	EffBptByInv->Sumw2();
+	CompHere2Shots->Divide(EffBptByInv);
+	CompHere2Shots->Write();
+	hPtGen2DFine->Write();
+
+	hPtAccInv2DFine->Write();
+	hPtGenAcc2DFine->Write();
+	foutFine->Close();
+
 
 }
 

@@ -122,14 +122,7 @@ void ReAnaEffNew(int CentMin, int CentMax,	const int NBins,	int DoTwoD, int drop
 
 
 
-	Int_t Bmu1Type[NCand];
-	Int_t Bmu2Type[NCand];
 
-
-	TTree * MuonInfoTree = (TTree * ) fin->Get("MuonInfoTree");
-
-	MuonInfoTree->SetBranchAddress("Bmu1Type",Bmu1Type);
-	MuonInfoTree->SetBranchAddress("Bmu2Type",Bmu2Type);
 
 
 	Float_t Bmu1etaNew[NCand];
@@ -414,14 +407,13 @@ void ReAnaEffNew(int CentMin, int CentMax,	const int NBins,	int DoTwoD, int drop
 	for( int i = 0; i < NEvents; i++){
 
 		EffInfoTree->GetEntry(i);
-		MuonInfoTree->GetEntry(i);
 
 		for(int j = 0; j < BsizeNew; j++){
 
 
 			for(int k = 0; k < NBins; k++){
 
-				if(BptNew[j] > ptBins[k] && BptNew[j] < ptBins[k+1] && (( BptNew[j] < 10 && TMath::Abs(BmassNew[j] - 5.36682) < 0.09) || (BptNew[j] > 10 && TMath::Abs(BmassNew[j] - 5.36682) < 0.08)) && (Bmu1Type[j] > -0.1&& Bmu2Type[j] > -0.1)){
+				if(BptNew[j] > ptBins[k] && BptNew[j] < ptBins[k+1] && (( BptNew[j] < 10 && TMath::Abs(BmassNew[j] - 5.36682) < 0.09) || (BptNew[j] > 10 && TMath::Abs(BmassNew[j] - 5.36682) < 0.08))){
 
 					//	SumCountsReal[k] = SumCountsReal[k] + BEff[j];
 					//cout << "BEffInv[j] = " << BEffInv[j] << endl; 
