@@ -10,11 +10,11 @@ To start, first find a fresh folder on your local machine
 
 Then get this repository first download it from github by doing:
 
-git clone https://github.com/MYOMAO/BsBpPbPb2018.git
+``git clone https://github.com/MYOMAO/BsBpPbPb2018.git``
 
 You will see the following two folders:
 
-BsAna BpAna BsAndBp
+``BsAna BpAna BsAndBp``
 
 Basically, they stands for the Bs part and the B+ part of the analysis codes. The BsAndBp are the codes to create common results for Bs and B+. They will get you the cross sections. 
 
