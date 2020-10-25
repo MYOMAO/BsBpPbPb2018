@@ -1,4 +1,4 @@
-### Please Read the Following Instruction to Get Started ###
+# Please Read the Following Instruction to Get Started #
 
 This repository is made to run the Bs/B+ analysis using CMS 2018 PbPb 5.02 TeV datasets. If you successfully run the codes, you should be able to get Bs/B+ as a function pT and event centrality
 
@@ -80,7 +80,7 @@ Keep in mind that we are using two different MC files for efficiency correction 
 
 
 
-# Raw Yield Extraction #
+### Raw Yield Extraction ###
 
 Now we have the input file for calculate the Bs nominal results. To get the nominal results, we first run the raw yield. Simply go to the folder: 
 
@@ -130,7 +130,7 @@ To your desired centrality range.
 
 
 
-# Efficiency Correction #
+### Efficiency Correction ###
 
 
 First, go to the efficiency correction folder:
@@ -159,7 +159,7 @@ All the plots are saved in the folder Plots/NoTnP/
 
 Note that, here we have ONLY calculate the mean value. The statistical uncertainties cannot be trusted in the printout. To estimate the correct (asymmetric) statistical uncertainties, we need to perform data-boostraping, which we will describe in the later sections. 
 
-# Corrected Yield Calculation #
+### Corrected Yield Calculation ###
 
 The final step is to calculate the corrected yield and make the final results plots.
 
