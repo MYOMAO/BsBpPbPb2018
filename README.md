@@ -21,9 +21,9 @@ Basically, they stands for the Bs part and the B+ part of the analysis codes. Th
 
 ## To Run the Codes ##
 
-The following will be for Bs. B+ analysis is basically identical. Before running the codes, make sure you have the file inside the folder named ``BsBPInputSamples". You can find it on MIT grendel: szhaozho@grendel01.mit.edu:/data/szhaozho/BsBPInputSamples. Inside the folder BsBPInputSamples, you should see the following files:
+The following will be for Bs. B+ analysis is basically identical. Before running the codes, make sure you have the file inside the folder named ``BsBPInputSamples``. You can find it on MIT grendel: szhaozho@grendel01.mit.edu:/data/szhaozho/BsBPInputSamples. Inside the folder BsBPInputSamples, you should see the following files:
 
-BPData.root  BPMCOld.root  BPMC.root  BsData.root
+``BPData.root  BPMCOld.root  BPMC.root  BsData.root``
 
 ## Generating Prerequisite Files for the Bs Nominal Results ##
 
@@ -33,11 +33,11 @@ cd BPAna/2DMap
 
 There are two ways to get the 2D map. The first way is to run the code ManualTest.C
 
-root -b -l -q ManualTest.C'(0,90)'
+`` root -b -l -q ManualTest.C'(0,90)'
 
 root -b -l -q ManualTest.C'(0,30)'
 
-root -b -l -q ManualTest.C'(30,90)'
+root -b -l -q ManualTest.C'(30,90)' ``
 
 Basically for each centrality bin. The output file is saved at NewEff2DMaps/
 
@@ -148,7 +148,7 @@ root -b -l -q ReAnaEffNew.C'(0,90,4,1,0,0)'
 
 Here, the first argument stands for the minimum centrality, the second argument stands for maximum centrality, the third argument stands for number of bins, the fourth argument stands for doing 1D, 2D, and fit function map 0,1,2 respectfully, the fifth argument stands for whether or not dropping the lowest pT bin (7 - 10 GeV/c), the sixth argument stands for the pT weight: 0 = no pT weight, 11 = linear function , 12 = quadratic, 13 = linear + inverse, 14 = linear + square root, 15 =  linear + log. 
 
-You will see the efficiency correction factor <1/acc $\times$ eff> and corrected yield in the print out.
+You will see the efficiency correction factor <1/acc * eff> and corrected yield in the print out.
 
 The output files for the efficiency is in the folder Efficiency/ 
 
