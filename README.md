@@ -374,12 +374,19 @@ To estimate the uncertainties, we will simply run the script:
 The printout of the numerical values can be found at, for instance, for the pT differential studies
 
 ``i = 0   Upper TnP Syst = 0.00824708``
+
 ``i = 0   Lower TnP Syst = 0.00811191``
+
 ``i = 1   Upper TnP Syst = 0.0142312``
+
 ``i = 1   Lower TnP Syst = 0.0138036``
+
 ``i = 2   Upper TnP Syst = 0.0172237``
+
 ``i = 2   Lower TnP Syst = 0.0166216``
+
 ``i = 3   Upper TnP Syst = 0.0172501``
+
 ``i = 3   Lower TnP Syst = 0.01664``
 
 Note that the script runs the code ``ReAnaEffTnPSyst.C``. The last option is for the TnP systematic on a specific TnP component:
@@ -406,8 +413,11 @@ We know that there is systematic uncertainties due to the unknown of the Bs pT s
 Then for the pT differential studies, look at the print out:
 
 ``i = 0  CorrYieldDiff =  865604``
+
 ``i = 1  CorrYieldDiff =  705950``
+
 ``i = 2  CorrYieldDiff =  231447``
+
 ``i = 3  CorrYieldDiff =  121349``
 
 For the centrality and inclusive bin studies, look at the print out:
@@ -418,15 +428,26 @@ Note that the file ``PtShapSyst.sh`` runs the code ``ReAnaEffPtShape.C``. The pt
 
 
 ``0 = no pT weight``
+
 ``11 = linear function``
+
 ``12 = quadratic``
+
 ``13 = linear + inverse``
+
 ``14 = linear + square root``
+
 ``15 =  linear + log``
 
 There are other option such as 
 
 ``1 = FONLL``
+
+In addition for B+ we have 
+
+``1 = Exponential Function * 3rd order poly nominal``
+
+``2 = 4th order poly nominal``
 
 These are not considered in our variation. But even if you include them, the systematic uncertainties will still be VERY SMALL and will not change the total systematic uncertainties. 
 
@@ -438,19 +459,280 @@ Again, keep in mind to update the numerical values of the pt shape systematic un
 
 ### MC-Data Disagreement ###
 
-Next is the imperfect agreement between the data and the MC. To estimate this systematic uncertainties, essentially, we use the sPLOT technique to extract the weight for the disagreement between the MC-
+Next is the imperfect agreement between the data and the MC. To estimate this systematic uncertainties, essentially, we use the sPLOT technique to extract the weight for the disagreement between the MC and the data. The sPLOT codes are developed by the LIP. They can be found here: ``https://github.com/powerfuljulia/BsinQGP``. 
 
 
 
 
 
+Basically, we just directly use the sPLOT weight from the LIP group above. Since the Bs has a very low statistics, We decide to use the B+ tracks variables: trk1Dxy1, Btrk1DxyError1,Btrk1Dz1, Btrk1DzError1, Btrk1Eta, Btrk1Pt, Btrk1Y, and take the largest deviation among them to the nominal <1/acc * eff>. 
+
+Hence, for Bs, we do the following:
+
+To run the codes, first we go to the B+ folder ``BPAna/Systematics/MCData/``:
+
+cd ``BPAna/Systematics/MCData/``
+
+Then we do 
+
+source RunForBs.sh
+
+After the script is done, the percent deviation for each kinematic track variable can be found at ``OutData/Bs``
+
+You should see 4 files
+
+``Syst_1_0_30.dat  Syst_1_0_90.dat  Syst_1_30_90.dat  Syst_4_0_90.dat``
+
+For example, one of the file ``OutData/Bs/Syst_1_0_90.dat``, which is for 0 - 90\% looks like this:
+
+
+
+``i = 0   Syst = -0.0123356``
+
+``i = 0   Syst = -0.0115487``
+
+``i = 0   Syst = 0.0272942``
+
+``i = 0   Syst = -0.0017606``
+
+``i = 0   Syst = -0.00658569``
+
+``i = 0   Syst = 0.017343``
+
+``i = 0   Syst = -0.00398941``
+
+Note that the script basically runs the code ``ReAnaEffMCData.C``. The last option of the code is about the different kinematic variables for Data-MC comparison:
+
+``0 = Nominal``
+
+``3 = Splot``
+
+``4 = Btrk1Eta``
+
+``5 = Btrk1Y``
+
+``6 = Btrk1Pt``
+
+``7 = Btrk1Dz1``
+
+``8 = Btrk1DzError1``
+
+``9 = Btrk1Dxy1``
+
+``9 = Btrk1DxyError1``
+
+Just pick the maximum deviation off 0 among them (here is 2.73\%) and remember to update the numerical values of the Data-MC systematic uncertainties in the ``BsAndBP/FinalPlots/B*Bin*.C`` files.
+
+
+Hence, for B+, we do the following: 
+
+
+source RunForBP.sh
+
+You can again file the output text files at  ``OutData/BP/``
+
+Again, you should see 4 files:
+
+``Syst_1_0_30.dat  Syst_1_0_90.dat  Syst_1_30_90.dat  Syst_4_0_90.dat``
+
+One of the file content, for example, ``Syst_4_0_90.dat`` is like this:
+
+
+``i = 0   Syst = 0.0405886``
+
+``i = 1   Syst = 0.14925``
+
+``i = 2   Syst = 0.029137``
+
+``i = 3   Syst = -0.0165247``
+
+
+Unlike Bs, here you do not need to pick the maximum inside the file. You basically, just need to quote these numbers and once again remember to update the numerical values of the Data-MC systematic uncertainties in the ``BsAndBP/FinalPlots/B*Bin*.C`` files.
 
 
 
 
+
+### MC Stat Systematics ###
+
+Finally, it comes to the MC Stat. Systematics. Basically, we generate 10k 2D maps varied by their statistical uncertainties and then get 10k data sets. Then, we plot the distribution of the <1/acc>, <1/eff>, <1/acc * eff> and quote the RMS/Mean as the MC Stat. Systematics. 
+
+First we go to the folder ``BsAna/Systematics/MCStat/``
+
+To run the codes, first we generate 10k 2D maps according to its nominal values and statistical uncertainties. For instance, for 0 - 90\%
+
+``root -b -l -q GenStatSyst.C'(0,90,0)'``
+
+Now you have generated 10k 2D map, they are stored at ``10kTH2D/GenStatSyst_0_90.root``
+
+Next, we calculate the <1/acc * eff> for each map, Simply run:
+
+``root -b -l -q ReAnaEffSyst.C'(0,90,0)'``
+
+The output for each <1/ac * eff> are stored at ``NunoSyst/0-90/AllTrials.root``
+
+Finally, to calculate the MC Stat Systematic for <1/acc>, <1/eff>, <1/acc * eff>, we just need to run the code:
+
+For pT differential
+
+``root -b -l -q CalculateNunoSyst.C'(0,90,4,0)'``
+
+
+For inclusive centrality 
+
+``root -b -l -q CalculateNunoSyst.C'(0,90,1,1)'``
+
+For centrality differential, we need to start over with 0 - 30\% and 30 - 90\% and finally run 
+
+``root -b -l -q CalculateNunoSyst.C'(0,30,1,1)'``
+
+``root -b -l -q CalculateNunoSyst.C'(30,90,1,1)'``
+
+After you run the codes, you should be able to see, for example for 0 - 90\% pT differential, the print out as follows: 
+
+
+``i = 0 Acc  Percentage Syst = 0.0206712``
+
+``i = 0 Sel Percentage Syst = 0.31896``
+
+``i = 0   Percentage Syst = 0.0972091``
+
+``i = 1 Acc  Percentage Syst = 0.0108078``
+
+``i = 1 Sel Percentage Syst = 0.228054``
+
+``i = 1   Percentage Syst = 0.0337798``
+
+``i = 2 Acc  Percentage Syst = 0.0110484``
+
+``i = 2 Sel Percentage Syst = 0.220733``
+
+``i = 2   Percentage Syst = 0.0198043``
+
+``i = 3 Acc  Percentage Syst = 0.00860431``
+
+``i = 3 Sel Percentage Syst = 0.135085``
+
+``i = 3   Percentage Syst = 0.0139482``
+
+Here, basically, the print out is about the MC Stat systematics for acceptance, selection efficiency, and acceptance * efficiency for each bT bin. 
+
+Again, now basically record the acceptance * efficiency for each bin and  once again remember to update the numerical values of the MC Stat systematic uncertainties in the ``BsAndBP/FinalPlots/B*Bin*.C`` files.
+
+Again, repeat everything above for B+, you get all the systematic uncertainties values for B+ as well and update to the B+ header files and codes too.
+
+
+## Making Final Figures ##
+
+First we go to the folder ``Codes/BsAndBP/FinalPlots``:
+
+``cd Codes/BsAndBP/FinalPlots``
+
+Everything then is based on the ``Codes/BsAndBP/FinalPlots`` folder.
+
+### Total Systematics Summaries ###
+
+Now we are ready to make the final plots. First, we should update all the numbers in the header files: ``BsSystValues.h`` and ``BpSystValues.h`` with the new systematic uncertainties. Keep in mind that ``EffSyst*`` includes: MC Stat, Data-MC,  pT shape, and tracking efficiency (5\% for B+ and 10\% for Bs). You basically need to add all those into quadratures and update the values to the arrays.
+
+After they are updated, you can plot the systematic error by running the codes:
+
+root -b -l -q PlotSystBs.C
+
+The output summary plots for the systematic uncertainties can be found at ``PlotSyst/Bs/``
+
+Same for B+.
+
+### Final Bs, B+, and Bs/B+ vs pT Plots ###
+
+First, make sure you have run the codes ``Bs1Bin.C, Bs2Bins.C, Bs4Bins.C,  BP1Bin.C, BP2Bins.C, BP4Bins.C, BsOverBPlus1Bin.C, BsOverBPlus2Bins.C, BsOverBPlus4Bins.C`` again. Then, they will generate all the text files for Bs and B+ corrected yield at ``OutText``. For instance, you see the file ``OutText/corryield_cent_0_90_Bp_New.txt`` for B+ 0 - 90\% inclusive bin:
+
+``NPart   xsec   statUncertUp   statUncertDown   systUncert Up   systUncert Down   glbUncert Up   glbUncert Down ``
+``126   1.94646e+06   0.0885   0.0795   0.14065   0.138668   0.028   0.028``
+
+You see a table of center the x-axis, y-axis, statistical error up and down, systematic error up and down, and global error up and down. 
+
+For the Bs/B+ ratio, they are saved at ``OutText/Ratio/ratio_pt.txt``
+
+It has similar format as the corrected yield. So the next step, you basically just copy all the *_pt (both corrected yield and ratio) files to the folder ``WithCao/Pt/dataSource`` and overwrite the existing files there
+
+``cp OutText/corryield_*pt*txt WithCao/Pt/dataSource/``
+
+``OutText/Ratio/ratio_pt.txt WithCao/Pt/dataSource/``
+
+
+Then we go to the ``WithCao/Pt/`` folder
+
+``cd `WithCao/Pt/``
+
+And then run to plot the final figures for the corrected yield with the following arguments:
+
+``root -b -l -q plotPt.C++'(1,1,0,1,1)'``
+
+This will generate output files with png and pdf formats. There is some style issue in the png format. You can find the pdf format of the Bs and B+ corrected yield plot (plotted together) at 
+
+``figs/pdf/xsec_vsPt.pdf``
+
+For the Bs/B+ vs pT, simply run:
+
+``root -b -l -q plotPt.C++'(1,1,1,1,1)'``
+
+Again, the output final plot for the Bs/B+ ratio are located at 
+
+``figs/pdf/ratio_vsPt_ref1_1.pdf``
+
+
+Basically, the first argument is whether to save the plots (should always be 1), the second argument is debug (you can turn it on), the third argument is ``0 for corrected yield`` and ``1 for Bs/B+ ratio``, the fourth argument is whether or not to drop the theory curves (TAMU and Cao), and the fifth is whether to draw the LHCb pp 7 TeV reference. The fourth and fifth options are for Bs/B+ ratio only. 
+
+
+### Final Bs, B+, and Bs/B+ vs Cent Plots ###
+
+Similarly, we copy everything to the centrality folder ``WithCao/Cent/``. 
+
+``cp OutText/corryield_*cent*txt WithCao/Cent/dataSource/``
+
+``OutText/Ratio/ratio_cent_0_* WithCao/Cent/dataSource/``
+
+Note that we have two seperated centralities: the differential 0 - 30\% + 30 - 90\% in one file and the inclusive 0 - 90\% in another file.
+
+Then similar to the Pt case, we go to the centrality folder ``WithCao/Pt/`` 
+
+``cd `WithCao/Cent/``
+
+And then run to plot the final figures for the corrected yield with the following arguments:
+
+``root -b -l -q plotCentStyle.C++'(1,1,0,1,"dataSource","figs")'``
+
+This will generate output files with png and pdf formats. There is some style issue in the png format. You can find the pdf format of the Bs and B+ corrected yield plot (plotted together) at 
+
+``figs/pdf/xsec_vsCent.pdf``
+
+
+For the Bs/B+ vs Cent, simply run:
+
+``root -b -l -q plotCentStyle.C++'(1,1,1,1,"dataSource","figs")'``
+
+Again, the output final plot for the Bs/B+ ratio are located at 
+
+``figs/pdf/ratio_vsCent_ref1.pdf``
+
+Here, the arguments are basically the same as the pT. But we do not have a theory curve option for now. In this code, for centrality, the Cao curve is always plotted along with data. The fifth ``dataSource`` argument basically specifies the input texts folder and the sixth ``figs`` argument basically specifies the output plots folder.
+
+## Finish ##
+
+Now, everything is DONE!! Thanks for all the hard work, IT PAYS OFF!!! Just collect all your final plots in pdf version:
+
+``Codes/BsAndBP/FinalPlots/WithCao/Pt/figs/pdf/xsec_vsPt.pdf``
+
+``Codes/BsAndBP/FinalPlots/WithCao/Pt/figs/pdf/ratio_vsPt_ref1_1.pdf``
+
+``Codes/BsAndBP/FinalPlots/WithCao/Cent/figs/pdf/xsec_vsCent.pdf``
+
+``Codes/BsAndBP/FinalPlots/WithCao/Cent/figs/pdf/ratio_vsCent_ref1.pdf``
+
+and post them to your presentations and papers.
 
 
 ## Contact ##
 
-If you have any question regarding to the instructions or the codes, please feel free to contact me by email: zzshi@mit.edu
+There will be more updates and refinements on the codes in the future. If you have any question regarding to the instructions or the codes, please feel free to contact me by email: zzshi@mit.edu
 
