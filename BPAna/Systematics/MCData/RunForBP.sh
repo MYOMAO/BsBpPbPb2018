@@ -1,3 +1,5 @@
+rm -rf OutData/BP/*
+
 echo Now work on pt 0 - 90:
 
 root -b -l -q ReAnaEffMCData.C'(0,90,4,1,0,3)'
