@@ -397,7 +397,9 @@ void ReAnaEffMCData(int CentMin, int CentMax,	const int NBins,	int DoTwoD, int d
 
 	cout << "invEff2DNominal->Integral() = " << invEff2DNominal->Integral() <<  "    invEff2D = " << invEff2D->Integral() << endl; 
 
-	TString OutNameDat = Form("OutData/Syst_%d_%d_%d.dat",NBins,CentMin,CentMax);
+	TString OutNameDat = Form("OutData/Bs/Syst_%d_%d_%d.dat",NBins,CentMin,CentMax);
+	if(Weight==3) OutNameDat = Form("OutData/BP/Syst_%d_%d_%d.dat",NBins,CentMin,CentMax);
+
 
 	std::ofstream OutData(OutNameDat.Data(), ios::app); 
 
